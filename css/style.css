@@ -1,0 +1,170 @@
+/* ================= RESET ================= */
+body {
+  margin: 0;
+}
+
+/* ================= LAYOUT PRINCIPAL ================= */
+.lado {
+  width: 50%;
+  height: 100%;
+}
+
+/* ===================================================== */
+/* ================= LADO ESQUERDO ====================== */
+/* ===================================================== */
+
+.esquerdo {
+  position: relative; /* necessário para elementos absolutos */
+  background-color: #6383FA;
+
+  /* ===== IMAGENS DE FUNDO (ORDEM = PROFUNDIDADE) ===== */
+  background-image: 
+    url("../img/pontos.png"),      
+    url("../img/pontos.png"),      
+    url("../img/esfera.png"),      
+    url("../img/tablete.png"),     
+    url("../img/esfera-azul.png"), 
+    url("../img/esfera-azul.png"), 
+    url("../img/esfera-azul.png"), /* esfera frente */
+    url("../img/circulo.png"),     /* círculo atrás */
+    url("../img/esfera-azul.png"), /* esfera principal */
+    url("../img/raio.png");        /* topo */
+
+  background-repeat: no-repeat;
+
+  /* ===== POSICIONAMENTO DAS IMAGENS ===== */
+  background-position: 
+    -100px -100px,                       
+    -100px calc(100% + 100px),          
+    right 60px top -50px,               
+    right 30px top -80px,               
+    30px -230px,                        
+    25px calc(100% - 100px),           
+    right 220px top 780px,              
+    right 70px top 680px,               
+    right 20px top 600px,               
+    right 60px top 620px;
+
+  /* ===== TAMANHO DAS IMAGENS ===== */
+  background-size: 
+    350px, 
+    350px, 
+    200px, 
+    450px, 
+    450px, 
+    100px,
+    100px,
+    550px,
+    650px,
+    620px;
+}
+
+/* ===== TEXTO ESQUERDO ===== */
+.titulo-principal {
+  font-size: 58px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.descricao {
+  font-size: 24px;
+}
+
+/* ===== MARCADOR DO RAIO ===== */
+.raio-mark {
+  position: absolute;
+  right: 520px;
+  top: 830px;
+  color: white;
+  font-size: 30px;
+}
+
+/* ===================================================== */
+/* ================= LADO DIREITO ======================= */
+/* ===================================================== */
+
+.direito {
+  background-color: #F5F6FA;
+}
+
+/* ===== CONTAINER DO FORM ===== */
+.form-box {
+  max-width: 400px;
+  margin-top: -50px;
+  transform: scale(1.1);
+}
+
+/* ===== LOGO ===== */
+.logo {
+  width: 480px;
+  height: auto;
+  position: relative;
+  left: 45%;
+  transform: translateX(-50%);
+  margin-bottom: -70px;
+}
+
+/* ===== INPUTS ===== */
+.input-group-text {
+  background-color: #fff;
+}
+
+/* ===== BOTÃO ===== */
+.btn-primary {
+  background: #6987FF;
+  border: none;
+  padding: 10px;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:hover {
+  background: #567efa; /* cor que você quiser */
+  border: none;
+  opacity: 1; /* remove aquele efeito de transparência */
+}
+
+.btn-primary:active {
+  background: #257BFF; /* cor mais escura */
+  transform: scale(0.97); /* efeito de pressionar */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== DIVIDER ===== */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #ccc;
+}
+
+.divider span {
+  margin: 0 10px;
+}
+
+/* ===== ICONES ===== */
+.icon-box {
+  width: 60px;
+  height: 60px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 20px;
+  color: #555;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.icon-box:hover {
+  background-color: #ddd;
+}

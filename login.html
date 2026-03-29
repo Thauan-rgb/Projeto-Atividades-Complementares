@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ================= BOOTSTRAP ================= -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- ================= CSS DO PROJETO ================= -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- ================= ICONS ================= -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+  <!-- ================= FAVICON ================= -->
+  <link rel="icon" href="img/logo.png">    
+
+  <title>HourSync</title>
+</head>
+
+<body>
+
+  <!-- ================= CONTAINER PRINCIPAL ================= -->
+  <div class="d-flex vh-100">
+
+    <!-- ================= LADO ESQUERDO ================= -->
+    <section class="lado esquerdo d-flex justify-content-center align-items-center">
+      <div class="container text-white text-center">
+
+        <h1 class="titulo-principal">
+          Seu Registro <br> começa aqui
+        </h1>
+
+        <p class="descricao">
+          Cadastre e mantenha o controle das <br>
+          atividades complementares dos alunos
+        </p>
+
+        <!-- marcador alinhado com o raio -->
+        <h2 class="raio-mark">x</h2>
+
+      </div>
+    </section>
+
+    <!-- ================= LADO DIREITO ================= -->
+    <section class="lado direito d-flex justify-content-center align-items-center">
+
+      <div class="container form-box text-center">
+
+        <!-- LOGO -->
+        <img src="img/hoursync.png" alt="HourSync" class="logo">
+
+        <h5 class="fw-bold">Sistema de Atividades Complementares</h5>
+        <p class="text-muted mb-4">Plataforma de Gestão e Análise</p>
+
+        <!-- FORM -->
+        <form>
+
+          <!-- EMAIL -->
+          <div class="mb-3 text-start">
+            <label class="form-label">Email Institucional</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+              <input type="email" class="form-control">
+            </div>
+          </div>
+
+          <!-- SENHA -->
+          <div class="mb-2 text-start">
+            <label class="form-label">Senha</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-lock"></i></span>
+              <input type="password" class="form-control">
+            </div>
+          </div>
+
+          <!-- LEMBRAR -->
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <input type="checkbox" id="lembrar">
+              <label for="lembrar" class="small text-muted">Lembre-se de mim</label>
+            </div>
+            <a href="#" class="small text-decoration-none">Esqueceu a senha?</a>
+          </div>
+
+          <!-- BOTÃO -->
+          <button class="btn btn-primary w-100 mb-4">
+            Acessar Plataforma
+          </button>
+
+        </form>
+
+        <!-- DIVISOR -->
+        <div class="divider my-3">
+          <span>Entre em contato conosco</span>
+        </div>
+
+        <!-- ICONES -->
+        <div class="d-flex justify-content-center gap-5 mb-4">
+          <div class="icon-box"><i class="fab fa-whatsapp"></i></div>
+          <div class="icon-box"><i class="fab fa-github"></i></div>
+          <div class="icon-box"><i class="fas fa-envelope"></i></div>
+        </div>
+
+        <p class="small text-muted">Todos os direitos reservados ao time</p>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ================= JS ================= -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
