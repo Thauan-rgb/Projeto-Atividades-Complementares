@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="icon" href="img/logo.png">    
+
+  <title>Alunos - HourSync</title>
+
+  <style>
+    body {
+        background: #f1f1f1;
+        display: flex;
+        padding: 20px;
+        gap: 20px;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      height: 95vh;
+      background: linear-gradient(180deg, #6c83e6, #5a78d6);
+      border-radius: 25px;
+      padding: 20px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      transition: width 0.3s ease;
+    }
+
+    .sidebar.collapsed {
+      width: 90px;
+    }
+
+    .toggle-btn {
+      cursor: pointer;
+      font-size: 20px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar.collapsed .toggle-btn {
+      justify-content: center;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .collapsed .logo,
+    .collapsed .profile h6,
+    .collapsed .menu span,
+    .collapsed .logout span {
+      display: none;
+    }
+
+    .collapsed .menu a,
+    .collapsed .logout {
+      justify-content: center;
+    }
+
+    .profile {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .profile img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .collapsed .profile img {
+      width: 50px;
+      height: 50px;
+    }
+
+    .menu a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      border-radius: 12px;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 8px;
+      transition: 0.3s;
+    }
+
+    .menu a:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .menu a.active {
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.4);
+      margin: 20px 0;
+    }
+
+    .logout {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .logout:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* CONTEÚDO PRINCIPAL */
+    .content {
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* TOPO */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .search-box {
+      background: #e9e9e9;
+      border: none;
+      border-radius: 15px;
+      padding: 8px 15px;
+      outline: none;
+      width: 260px;
+    }
+
+    /* CARDS ESTATÍSTICAS */
+    .stats-row {
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      border-radius: 20px;
+      padding: 18px 16px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: 0.2s;
+      border-left: 6px solid;
+      height: 100%;
+    }
+    .stat-card .stat-title {
+      font-size: 14px;
+      color: #6c757d;
+      letter-spacing: 0.5px;
+    }
+    .stat-card .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1e2a5e;
+      line-height: 1.2;
+    }
+    .stat-card .stat-unit {
+      font-size: 14px;
+      font-weight: 400;
+      color: #6c757d;
+    }
+    .border-primary-custom { border-left-color: #6383FA; }
+    .border-warning-custom { border-left-color: #6383FA; }
+    .border-success-custom { border-left-color: #6383FA; }
+    .border-info-custom { border-left-color: #6383FA; }
+
+    /* LISTA DE ALUNOS (TABELA + DETALHES) */
+    .students-section {
+      background: white;
+      border-radius: 24px;
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-badge {
+      background: #f0f2f5;
+      padding: 5px 12px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #2d3e6e;
+    }
+
+    /* tabela responsiva com scroll */
+    .table-responsive-custom {
+      overflow-y: auto;
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .table-custom {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table-custom th {
+      background: #f8f9fc;
+      padding: 12px 8px;
+      font-weight: 600;
+      color: #2c3e66;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .table-custom td {
+      padding: 14px 8px;
+      vertical-align: middle;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .progress-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 120px;
+    }
+    .progress {
+      flex: 1;
+      height: 8px;
+      border-radius: 10px;
+      background: #e9ecef;
+    }
+    .progress-bar-custom {
+      background: #6c83e6;
+      border-radius: 10px;
+      height: 100%;
+      width: 0%;
+    }
+    .progress-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: #2c3e66;
+      min-width: 45px;
+    }
+
+    .badge-status {
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-weight: 500;
+    }
+    .badge-concluido {
+      background: #e0f2e9;
+      color: #1e7b5c;
+    }
+    .badge-andamento {
+      background: #fff0db;
+      color: #c46b2e;
+    }
+
+    .btn-ver {
+      background: transparent;
+      border: 1px solid #cdd9ed;
+      border-radius: 30px;
+      padding: 4px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #3f5e9c;
+      transition: 0.2s;
+    }
+    .btn-ver:hover {
+      background: #6c83e6;
+      border-color: #6c83e6;
+      color: white;
+    }
+
+    /* Modal detalhe aluno */
+    .modal-detail .modal-content {
+      border-radius: 28px;
+      border: none;
+      overflow: hidden;
+    }
+    .modal-header-custom {
+      background: linear-gradient(95deg, #6c83e6, #5a78d6);
+      color: white;
+      padding: 18px 24px;
+    }
+    .horas-circle {
+      background: #eef2ff;
+      border-radius: 60px;
+      padding: 6px 16px;
+      font-weight: 600;
+      color: #2d3e6e;
+    }
+    .cert-item {
+      background: #f8fafd;
+      border-radius: 18px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid #6c83e6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR (mesmo estilo do dashboard) -->
+  <div class="sidebar" id="sidebar">
+    <div>
+      <div class="toggle-btn" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+      </div>
+      <div class="logo">HourSync</div>
+      <div class="profile">
+        <img src="img/sabrina.jpeg" alt="profile">
+        <h6>Sabrina Carpenter</h6>
+      </div>
+      <div class="menu">
+        <a href="dashboard_coordenador.html"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+        <a href="certificados_coordenador.html"><i class="bi bi-file-earmark-text"></i><span>Certificados</span></a>
+        <a href="alunos_coordenador.html" class="active"><i class="bi bi-people"></i><span>Alunos</span></a>
+        <a href="configuracoes_coordenador.html"><i class="bi bi-gear"></i><span>Configurações</span></a>
+      </div>
+    </div>
+    <div>
+      <div class="divider"></div>
+      <a href="login.html" class="logout"><i class="bi bi-box-arrow-right"></i><span>Sair</span></a>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <div class="content">
+    <!-- TOPO -->
+    <div class="topbar">
+      <h5><strong>Alunos</strong></h5>
+      <input type="text" class="search-box" id="searchInput" placeholder="Pesquisar aluno...">
+    </div>
+
+    <!-- CARDS com base na imagem: Total Alunos, Em Andamento, Concluído, Média de Horas -->
+    <div class="row stats-row g-3">
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card border-primary-custom">
+          <div class="stat-title">Total de Alunos</div>
+          <div class="stat-number" id="totalAlunosCount">120</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card border-warning-custom">
+          <div class="stat-title">Em Andamento</div>
+          <div class="stat-number" id="emAndamentoCount">75</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card border-success-custom">
+          <div class="stat-title">Concluído</div>
+          <div class="stat-number" id="concluidoCount">45</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card border-info-custom">
+          <div class="stat-title">Média de Horas</div>
+          <div class="stat-number">140<span class="stat-unit">h</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO PRINCIPAL: Lista de Alunos com tabela e ações -->
+    <div class="students-section">
+      <div class="section-header">
+        <h6 class="mb-0"><strong>📋 Lista de Alunos</strong></h6>
+        <div class="filter-badge">
+          <i class="bi bi-funnel"></i> Todos os cursos
+        </div>
+      </div>
+
+      <div class="table-responsive-custom">
+        <table class="table-custom">
+          <thead>
+            <tr>
+              <th>Aluno</th>
+              <th>Horas</th>
+              <th>Progresso</th>
+              <th>Status</th>
+              <th>Certificado</th>
+            </tr>
+          </thead>
+          <tbody id="alunosTableBody">
+            <!-- dados injetados via JS, compatível com a imagem e arquivo base -->
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-3 text-muted small" id="infoResultados">Exibindo <span id="exibindoCount">0</span> alunos</div>
+    </div>
+  </div>
+
+  <!-- MODAL DE DETALHES DO ALUNO (certificados aceitos e detalhes) -->
+  <div class="modal fade modal-detail" id="modalAluno" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header-custom">
+          <h5 class="modal-title" id="modalAlunoNome">João Silva da Cunha</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="padding: 1.5rem;">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="horas-circle"><i class="bi bi-clock-history"></i> <span id="modalTotalHoras">0h</span></span>
+            <span class="horas-circle"><i class="bi bi-hourglass-split"></i> <span id="modalHorasRestantes">0h</span></span>
+          </div>
+          <div class="progress mb-4" style="height: 10px;">
+            <div class="progress-bar-custom" id="modalProgressBar" style="width: 0%; background: #6c83e6;"></div>
+          </div>
+          <h6 class="fw-bold"><i class="bi bi-patch-check"></i> Certificados Aceitos:</h6>
+          <div id="modalCertificadosList" style="margin-top: 12px;">
+            <!-- lista dinâmica -->
+          </div>
+          <div class="alert alert-light mt-3 p-2 small text-center" role="alert">
+            <i class="bi bi-info-circle"></i> Total acumulado válido para horas complementares
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Dados dos alunos conforme imagem e adicionando informações extras para enriquecer (baseado no conteúdo: João, Ana, Julia)
+    const alunosData = [
+      {
+        id: 1,
+        nome: "João Silva",
+        nomeCompleto: "João Silva da Cunha",
+        horasCumpridas: 40,
+        horasNecessarias: 100,
+        status: "Em Andamento",
+        certificadosAceitos: [
+          { nome: "Palestra - Inovação em ADS", horas: 20 },
+          { nome: "Evento - Semana da Tecnologia", horas: 10 },
+          { nome: "Curso - Desenvolvimento Web", horas: 40 }
+        ]
+      },
+      {
+        id: 2,
+        nome: "Ana Maria",
+        nomeCompleto: "Ana Maria Souza",
+        horasCumpridas: 10,
+        horasNecessarias: 200,
+        status: "Em Andamento",
+        certificadosAceitos: [
+          { nome: "Palestra - Gestão Gastronômica", horas: 6 },
+          { nome: "Curso - Segurança Alimentar", horas: 4 }
+        ]
+      },
+      {
+        id: 3,
+        nome: "Julia Barboza",
+        nomeCompleto: "Julia Barboza Lima",
+        horasCumpridas: 20,
+        horasNecessarias: 100,
+        status: "Em Andamento",
+        certificadosAceitos: [
+          { nome: "Evento - Feira de Profissões", horas: 12 },
+          { nome: "Workshop - Design Thinking", horas: 8 }
+        ]
+      },
+      {
+        id: 4,
+        nome: "Marcos Vinicius",
+        nomeCompleto: "Marcos Vinicius Rocha",
+        horasCumpridas: 120,
+        horasNecessarias: 120,
+        status: "Concluído",
+        certificadosAceitos: [
+          { nome: "Curso - Inglês Avançado", horas: 60 },
+          { nome: "Palestra - Empreendedorismo", horas: 20 },
+          { nome: "Estágio Voluntário", horas: 40 }
+        ]
+      },
+      {
+        id: 5,
+        nome: "Camila Fernandes",
+        nomeCompleto: "Camila Fernandes Alves",
+        horasCumpridas: 85,
+        horasNecessarias: 150,
+        status: "Em Andamento",
+        certificadosAceitos: [
+          { nome: "Curso - Sustentabilidade", horas: 30 },
+          { nome: "Evento - Hackathon", horas: 25 },
+          { nome: "Palestra - Liderança", horas: 30 }
+        ]
+      },
+      {
+        id: 6,
+        nome: "Rafael Menezes",
+        nomeCompleto: "Rafael Menezes Neto",
+        horasCumpridas: 150,
+        horasNecessarias: 150,
+        status: "Concluído",
+        certificadosAceitos: [
+          { nome: "Curso - Gestão de Projetos", horas: 80 },
+          { nome: "Evento - Simpósio de TI", horas: 40 },
+          { nome: "Palestra - Inovação", horas: 30 }
+        ]
+      }
+    ];
+
+    // Atualiza os cards dinamicamente com base nos dados (total, em andamento, concluído)
+    function updateStats() {
+      const total = alunosData.length;
+      const emAndamento = alunosData.filter(aluno => aluno.status === "Em Andamento").length;
+      const concluido = alunosData.filter(aluno => aluno.status === "Concluído").length;
+      const somaHoras = alunosData.reduce((acc, aluno) => acc + aluno.horasCumpridas, 0);
+      const mediaHoras = total ? Math.round(somaHoras / total) : 0;
+
+      document.getElementById("totalAlunosCount").innerText = total;
+      document.getElementById("emAndamentoCount").innerText = emAndamento;
+      document.getElementById("concluidoCount").innerText = concluido;
+      // A média de horas conforme imagem = 140 (ajustamos dinamicamente baseado nos dados)
+      document.querySelector(".stat-card.border-info-custom .stat-number").innerHTML = mediaHoras + '<span class="stat-unit">h</span>';
+    }
+
+    // Renderizar tabela com filtro de pesquisa
+    let currentSearchTerm = "";
+
+    function renderTabelaAlunos() {
+      const searchTerm = currentSearchTerm.toLowerCase().trim();
+      let filtered = [...alunosData];
+      if (searchTerm !== "") {
+        filtered = filtered.filter(aluno => aluno.nome.toLowerCase().includes(searchTerm) || aluno.nomeCompleto.toLowerCase().includes(searchTerm));
+      }
+
+      const tbody = document.getElementById("alunosTableBody");
+      tbody.innerHTML = "";
+      filtered.forEach(aluno => {
+        const horasStr = `${aluno.horasCumpridas}h/${aluno.horasNecessarias}h`;
+        const percentual = (aluno.horasCumpridas / aluno.horasNecessarias) * 100;
+        const percentualExato = Math.min(percentual, 100);
+        const progressWidth = percentualExato + "%";
+        
+        let statusClass = "";
+        let statusText = "";
+        if (aluno.status === "Concluído") {
+          statusClass = "badge-concluido";
+          statusText = "Concluído";
+        } else {
+          statusClass = "badge-andamento";
+          statusText = "Em Andamento";
+        }
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><strong>${aluno.nome}</strong></td>
+          <td>${horasStr}</td>
+          <td>
+            <div class="progress-wrapper">
+              <div class="progress">
+                <div class="progress-bar-custom" style="width: ${progressWidth};"></div>
+              </div>
+              <span class="progress-text">${Math.round(percentualExato)}%</span>
+            </div>
+          </td>
+          <td><span class="badge-status ${statusClass}">${statusText}</span></td>
+          <td><button class="btn-ver" data-id="${aluno.id}">Ver</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.getElementById("exibindoCount").innerText = filtered.length;
+      if (filtered.length === 0) {
+        const emptyRow = document.createElement("tr");
+        emptyRow.innerHTML = `<td colspan="5" class="text-center py-4 text-muted">Nenhum aluno encontrado</td>`;
+        tbody.appendChild(emptyRow);
+      }
+
+      // Adicionar eventos aos botões "Ver" para abrir modal com detalhes
+      document.querySelectorAll(".btn-ver").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          const alunoId = parseInt(btn.getAttribute("data-id"));
+          const aluno = alunosData.find(a => a.id === alunoId);
+          if (aluno) abrirModalAluno(aluno);
+        });
+      });
+    }
+
+    // Modal com detalhes (Certificados aceitos, horas restantes, progresso)
+    function abrirModalAluno(aluno) {
+      const modalNome = document.getElementById("modalAlunoNome");
+      const modalTotalHoras = document.getElementById("modalTotalHoras");
+      const modalHorasRestantes = document.getElementById("modalHorasRestantes");
+      const modalProgressBar = document.getElementById("modalProgressBar");
+      const modalCertificadosList = document.getElementById("modalCertificadosList");
+
+      modalNome.innerText = aluno.nomeCompleto;
+      const totalCumpridas = aluno.horasCumpridas;
+      const totalNecessarias = aluno.horasNecessarias;
+      const restantes = Math.max(0, totalNecessarias - totalCumpridas);
+      modalTotalHoras.innerText = `${totalCumpridas}h / ${totalNecessarias}h`;
+      modalHorasRestantes.innerText = `${restantes}h restantes`;
+      const percent = (totalCumpridas / totalNecessarias) * 100;
+      modalProgressBar.style.width = Math.min(percent, 100) + "%";
+
+      // Montar lista de certificados aceitos
+      modalCertificadosList.innerHTML = "";
+      if (aluno.certificadosAceitos && aluno.certificadosAceitos.length) {
+        aluno.certificadosAceitos.forEach(cert => {
+          const div = document.createElement("div");
+          div.className = "cert-item";
+          div.innerHTML = `
+            <span><i class="bi bi-file-text-fill" style="color:#6c83e6;"></i> <strong>${cert.nome}</strong></span>
+            <span class="badge bg-light text-dark">${cert.horas}h</span>
+          `;
+          modalCertificadosList.appendChild(div);
+        });
+      } else {
+        modalCertificadosList.innerHTML = '<p class="text-muted">Nenhum certificado aceito registrado.</p>';
+      }
+
+      // Exibir modal via Bootstrap
+      const modal = new bootstrap.Modal(document.getElementById("modalAluno"));
+      modal.show();
+    }
+
+    // Evento de busca
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) {
+      searchInput.addEventListener("input", (e) => {
+        currentSearchTerm = e.target.value;
+        renderTabelaAlunos();
+      });
+    }
+
+    // Sidebar toggle function
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+    }
+
+    // Inicialização
+    function init() {
+      updateStats();
+      renderTabelaAlunos();
+    }
+
+    init();
+
+    // Ajuste extra: Caso as imagens de perfil não existam, não quebra layout. Podemos usar fallback inline mas manter.
+    // Torna toggle disponível globalmente
+    window.toggleSidebar = toggleSidebar;
+  </script>
+</body>
+</html>
