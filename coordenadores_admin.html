@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="icon" href="img/logo.png">
+
+  <title>HourSync - Gestão de Coordenadores</title>
+
+  <style>
+    body {
+        background: #f1f1f1;
+        display: flex;
+        padding: 20px;
+        gap: 20px;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      height: 95vh;
+      background: linear-gradient(180deg, #6c83e6, #5a78d6);
+      border-radius: 25px;
+      padding: 20px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      transition: width 0.3s ease;
+    }
+
+    .sidebar.collapsed {
+      width: 90px;
+    }
+
+    .toggle-btn {
+      cursor: pointer;
+      font-size: 20px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar.collapsed .toggle-btn {
+      justify-content: center;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .collapsed .logo,
+    .collapsed .profile h6,
+    .collapsed .menu span,
+    .collapsed .logout span {
+      display: none;
+    }
+
+    .collapsed .menu a,
+    .collapsed .logout {
+      justify-content: center;
+    }
+
+    .profile {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .profile img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .collapsed .profile img {
+      width: 50px;
+      height: 50px;
+    }
+
+    .menu a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      border-radius: 12px;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 8px;
+      transition: 0.3s;
+    }
+
+    .menu a:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .menu a.active {
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.4);
+      margin: 20px 0;
+    }
+
+    .logout {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .logout:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* CONTEÚDO */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 5px;
+    }
+
+    .content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .content::-webkit-scrollbar-track {
+      background: #e9ecef;
+      border-radius: 10px;
+    }
+
+    .content::-webkit-scrollbar-thumb {
+      background: #6c83e6;
+      border-radius: 10px;
+    }
+
+    /* TOPO */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .search-box {
+      background: #e9e9e9;
+      border: none;
+      border-radius: 15px;
+      padding: 8px 15px;
+      outline: none;
+      width: 260px;
+    }
+
+    /* CARDS ESTATÍSTICAS */
+    .stats-row {
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      border-radius: 20px;
+      padding: 18px 16px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: 0.2s;
+      border-left: 6px solid;
+      height: 100%;
+    }
+
+    .stat-card .stat-title {
+      font-size: 14px;
+      color: #6c757d;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .stat-card .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1e2a5e;
+      line-height: 1.2;
+    }
+
+    .border-coordenadores { border-left-color: #f4a261; }
+    .border-cursos { border-left-color: #6c83e6; }
+    .border-ativos { border-left-color: #2a9d8f; }
+    .border-inativos { border-left-color: #e76f51; }
+
+    /* TABELA DE COORDENADORES */
+    .coordinators-card {
+      background: white;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .coordinators-card h6 {
+      color: #1e2a5e;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .table-custom {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table-custom th {
+      background: #f8f9fc;
+      padding: 12px 8px;
+      font-weight: 600;
+      color: #2c3e66;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .table-custom td {
+      padding: 12px 8px;
+      vertical-align: middle;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .btn-action {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: 0.2s;
+      margin: 0 4px;
+    }
+
+    .btn-action.edit {
+      color: #6c83e6;
+    }
+    .btn-action.edit:hover {
+      color: #4a63c4;
+      transform: scale(1.05);
+    }
+    .btn-action.delete {
+      color: #dc3545;
+    }
+    .btn-action.delete:hover {
+      color: #a71d2a;
+      transform: scale(1.05);
+    }
+    .btn-action.toggle {
+      color: #2a9d8f;
+    }
+    .btn-action.toggle:hover {
+      color: #1e7a6e;
+      transform: scale(1.05);
+    }
+
+    .btn-add {
+      background: #6c83e6;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 30px;
+      color: white;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .btn-add:hover {
+      background: #5a6fd1;
+      transform: translateY(-2px);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-ativo {
+      background: #e0f2e9;
+      color: #2a9d8f;
+    }
+
+    .status-inativo {
+      background: #fde2e4;
+      color: #e76f51;
+    }
+
+    .form-label {
+      font-weight: 500;
+      font-size: 13px;
+      color: #495057;
+    }
+
+    .required-field::after {
+      content: " *";
+      color: #dc3545;
+    }
+
+    .course-tag {
+      background: #e9ecef;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 2px;
+    }
+
+    .course-tag i {
+      cursor: pointer;
+      color: #dc3545;
+      font-size: 10px;
+    }
+
+    .modal-content {
+      border-radius: 24px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div>
+      <div class="toggle-btn" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+      </div>
+
+      <div class="logo">HourSync</div>
+
+      <div class="profile">
+        <img src="img/taylor.jpeg" alt="profile">
+        <h6>Taylor Swift</h6>
+      </div>
+
+      <div class="menu">
+        <a href="dashboard_admin.html"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+        <a href="gestao_cursos_admin.html"><i class="bi bi-book"></i><span>Gestão de Cursos</span></a>
+        <a href="coordenadores_admin.html" class="active"><i class="bi bi-people"></i><span>Coordenadores</span></a>
+        <a href="certificados_admin.html"><i class="bi bi-file-earmark-text"></i><span>Certificados</span></a>
+        <a href="configuracoes_admin.html"><i class="bi bi-gear"></i><span>Configurações</span></a>
+      </div>
+    </div>
+
+    <div>
+      <div class="divider"></div>
+      <a href="login.html" class="logout"><i class="bi bi-box-arrow-right"></i><span>Sair</span></a>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO -->
+  <div class="content">
+
+    <!-- TOPO -->
+    <div class="topbar">
+      <h5><strong>Gestão de Coordenadores</strong> <span style="font-size: 14px; color: #6c757d;">/ Gerenciar coordenadores da faculdade</span></h5>
+      <input type="text" class="search-box" id="searchInput" placeholder="Pesquisar coordenador...">
+    </div>
+
+    <!-- CARDS PRINCIPAIS -->
+    <div class="row stats-row g-3">
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card border-coordenadores">
+          <div class="stat-title">Total de Coordenadores</div>
+          <div class="stat-number" id="totalCoordenadoresCount">3</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card border-cursos">
+          <div class="stat-title">Cursos Vinculados</div>
+          <div class="stat-number" id="totalCursosVinculados">5</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card border-ativos">
+          <div class="stat-title">Coordenadores Ativos</div>
+          <div class="stat-number" id="ativosCount">2</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="stat-card border-inativos">
+          <div class="stat-title">Coordenadores Inativos</div>
+          <div class="stat-number" id="inativosCount">1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABELA DE COORDENADORES + BOTÃO ADICIONAR -->
+    <div class="coordinators-card">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h6><i class="bi bi-person-badge"></i> Lista de Coordenadores</h6>
+        <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#addCoordinatorModal">
+          <i class="bi bi-plus-lg"></i> Adicionar Coordenador
+        </button>
+      </div>
+      <div class="table-responsive">
+        <table class="table-custom" id="coordinatorsTable">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Cursos</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="coordinatorsTableBody">
+            <!-- Coordenadores serão inseridos dinamicamente -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL ADICIONAR COORDENADOR -->
+  <div class="modal fade" id="addCoordinatorModal" tabindex="-1" aria-labelledby="addCoordinatorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header" style="background: linear-gradient(135deg, #6c83e6, #5a78d6); color: white; border-radius: 24px 24px 0 0;">
+          <h5 class="modal-title" id="addCoordinatorModalLabel"><i class="bi bi-person-plus-fill me-2"></i> Adicionar Coordenador</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="mb-3">
+            <label class="form-label required-field fw-bold">Nome Completo</label>
+            <input type="text" class="form-control" id="coordName" placeholder="Ex: Amelara Silva">
+          </div>
+          <div class="mb-3">
+            <label class="form-label required-field fw-bold">Email</label>
+            <input type="email" class="form-control" id="coordEmail" placeholder="Ex: coordenador@faculdade.edu.br">
+          </div>
+          <div class="mb-3">
+            <label class="form-label required-field fw-bold">Senha</label>
+            <input type="password" class="form-control" id="coordPassword" placeholder="********">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Cursos Vinculados</label>
+            <div class="mb-2">
+              <select class="form-select" id="courseSelect">
+                <option value="">Selecione um curso...</option>
+              </select>
+            </div>
+            <div id="selectedCoursesContainer" class="d-flex flex-wrap gap-1 mb-2"></div>
+            <button type="button" class="btn btn-outline-custom btn-sm" id="addCourseBtn">
+              <i class="bi bi-plus-lg"></i> Adicionar Curso
+            </button>
+            <small class="text-muted d-block mt-1">Selecione os cursos que este coordenador irá gerenciar</small>
+          </div>
+        </div>
+        <div class="modal-footer" style="border-top: 1px solid #e9ecef;">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius:30px;">Cancelar</button>
+          <button type="button" class="btn btn-add" id="confirmAddCoordBtn">Salvar Coordenador</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL EDITAR COORDENADOR -->
+  <div class="modal fade" id="editCoordinatorModal" tabindex="-1" aria-labelledby="editCoordinatorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header" style="background: linear-gradient(135deg, #6c83e6, #5a78d6); color: white; border-radius: 24px 24px 0 0;">
+          <h5 class="modal-title" id="editCoordinatorModalLabel"><i class="bi bi-pencil-square me-2"></i> Editar Coordenador</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <input type="hidden" id="editCoordId">
+          <div class="mb-3">
+            <label class="form-label required-field fw-bold">Nome Completo</label>
+            <input type="text" class="form-control" id="editCoordName">
+          </div>
+          <div class="mb-3">
+            <label class="form-label required-field fw-bold">Email</label>
+            <input type="email" class="form-control" id="editCoordEmail">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Nova Senha (opcional)</label>
+            <input type="password" class="form-control" id="editCoordPassword" placeholder="Deixe em branco para manter a atual">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Cursos Vinculados</label>
+            <div class="mb-2">
+              <select class="form-select" id="editCourseSelect">
+                <option value="">Selecione um curso...</option>
+              </select>
+            </div>
+            <div id="editSelectedCoursesContainer" class="d-flex flex-wrap gap-1 mb-2"></div>
+            <button type="button" class="btn btn-outline-custom btn-sm" id="editAddCourseBtn">
+              <i class="bi bi-plus-lg"></i> Adicionar Curso
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer" style="border-top: 1px solid #e9ecef;">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius:30px;">Cancelar</button>
+          <button type="button" class="btn btn-add" id="confirmEditCoordBtn">Salvar Alterações</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CONFIRMAÇÃO EXCLUSÃO -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header" style="background: #dc3545; color: white; border-radius: 24px 24px 0 0;">
+          <h5 class="modal-title" id="deleteModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirmar Exclusão</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Tem certeza que deseja excluir o coordenador <strong id="deleteCoordName"></strong>?</p>
+          <p class="text-muted small">Esta ação não poderá ser desfeita.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Excluir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // ---------- DATA MODEL ----------
+    // Lista de cursos disponíveis (para vínculo)
+    let availableCourses = [
+      { id: "c1", name: "ADS" },
+      { id: "c2", name: "Jogos Digitais" },
+      { id: "c3", name: "Internet das Coisas" },
+      { id: "c4", name: "Gastronomia" }
+    ];
+
+    // Lista de coordenadores
+    let coordinators = [
+      {
+        id: "coord1",
+        name: "Amelara Silva",
+        email: "amelara@gmail.com",
+        password: "123456",
+        courses: ["c1", "c2"],
+        active: true
+      },
+      {
+        id: "coord2",
+        name: "Carlos Mendes",
+        email: "carlos.mendes@faculdade.edu.br",
+        password: "123456",
+        courses: ["c3"],
+        active: true
+      },
+      {
+        id: "coord3",
+        name: "Fernanda Lima",
+        email: "fernanda.lima@faculdade.edu.br",
+        password: "123456",
+        courses: ["c4"],
+        active: false
+      }
+    ];
+
+    let currentDeleteId = null;
+    let currentEditId = null;
+    let tempSelectedCourses = [];
+    let tempEditSelectedCourses = [];
+
+    // Helper: generate unique ID
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
+    }
+
+    // Atualizar cards de estatísticas
+    function updateStats() {
+      const total = coordinators.length;
+      const ativos = coordinators.filter(c => c.active).length;
+      const inativos = total - ativos;
+      
+      // Total de cursos vinculados (sem duplicação)
+      const allCourses = new Set();
+      coordinators.forEach(coord => {
+        coord.courses.forEach(courseId => allCourses.add(courseId));
+      });
+      
+      document.getElementById('totalCoordenadoresCount').innerText = total;
+      document.getElementById('ativosCount').innerText = ativos;
+      document.getElementById('inativosCount').innerText = inativos;
+      document.getElementById('totalCursosVinculados').innerText = allCourses.size;
+    }
+
+    // Obter nome do curso por ID
+    function getCourseName(courseId) {
+      const course = availableCourses.find(c => c.id === courseId);
+      return course ? course.name : courseId;
+    }
+
+    // Renderizar tabela de coordenadores
+    function renderCoordinatorsTable() {
+      const tbody = document.getElementById('coordinatorsTableBody');
+      if (!tbody) return;
+      
+      if (coordinators.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Nenhum coordenador cadastrado. Clique em "Adicionar Coordenador".</td></tr>';
+        return;
+      }
+      
+      tbody.innerHTML = coordinators.map(coord => `
+        <tr>
+          <td><strong>${escapeHtml(coord.name)}</strong></td>
+          <td>${escapeHtml(coord.email)}</td>
+          <td>
+            ${coord.courses.map(courseId => `<span class="course-tag">${escapeHtml(getCourseName(courseId))}</span>`).join('') || '<span class="text-muted">Nenhum curso</span>'}
+           </td>
+          <td>
+            <span class="status-badge ${coord.active ? 'status-ativo' : 'status-inativo'}">
+              ${coord.active ? 'Ativo' : 'Inativo'}
+            </span>
+           </td>
+          <td>
+            <button class="btn-action toggle" data-id="${coord.id}" title="${coord.active ? 'Desativar' : 'Ativar'}"><i class="bi ${coord.active ? 'bi-pause-circle' : 'bi-play-circle'}"></i></button>
+            <button class="btn-action edit" data-id="${coord.id}" title="Editar"><i class="bi bi-pencil-fill"></i></button>
+            <button class="btn-action delete" data-id="${coord.id}" data-name="${escapeHtml(coord.name)}" title="Excluir"><i class="bi bi-trash-fill"></i></button>
+           </td>
+         </tr>
+      `).join('');
+      
+      // Eventos de toggle (ativar/desativar)
+      document.querySelectorAll('.btn-action.toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute('data-id');
+          toggleCoordinatorStatus(id);
+        });
+      });
+      
+      // Eventos de editar
+      document.querySelectorAll('.btn-action.edit').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute('data-id');
+          openEditModal(id);
+        });
+      });
+      
+      // Eventos de deletar
+      document.querySelectorAll('.btn-action.delete').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute('data-id');
+          const name = btn.getAttribute('data-name');
+          openDeleteModal(id, name);
+        });
+      });
+    }
+    
+    function toggleCoordinatorStatus(id) {
+      const coordinator = coordinators.find(c => c.id === id);
+      if (coordinator) {
+        coordinator.active = !coordinator.active;
+        renderCoordinatorsTable();
+        updateStats();
+      }
+    }
+    
+    function openDeleteModal(id, name) {
+      currentDeleteId = id;
+      document.getElementById('deleteCoordName').innerText = name;
+      const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+      modal.show();
+    }
+    
+    function confirmDelete() {
+      if (currentDeleteId) {
+        coordinators = coordinators.filter(c => c.id !== currentDeleteId);
+        renderCoordinatorsTable();
+        updateStats();
+        const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+        if (modal) modal.hide();
+        currentDeleteId = null;
+      }
+    }
+    
+    function openEditModal(id) {
+      const coordinator = coordinators.find(c => c.id === id);
+      if (!coordinator) return;
+      currentEditId = id;
+      tempEditSelectedCourses = [...coordinator.courses];
+      
+      document.getElementById('editCoordId').value = id;
+      document.getElementById('editCoordName').value = coordinator.name;
+      document.getElementById('editCoordEmail').value = coordinator.email;
+      document.getElementById('editCoordPassword').value = '';
+      
+      updateEditCoursesDisplay();
+      
+      const modal = new bootstrap.Modal(document.getElementById('editCoordinatorModal'));
+      modal.show();
+    }
+    
+    function updateEditCoursesDisplay() {
+      const container = document.getElementById('editSelectedCoursesContainer');
+      if (tempEditSelectedCourses.length === 0) {
+        container.innerHTML = '<span class="text-muted small">Nenhum curso selecionado</span>';
+      } else {
+        container.innerHTML = tempEditSelectedCourses.map(courseId => `
+          <span class="course-tag">
+            ${escapeHtml(getCourseName(courseId))}
+            <i class="bi bi-x-circle-fill remove-edit-course" data-course="${courseId}"></i>
+          </span>
+        `).join('');
+      }
+      
+      document.querySelectorAll('.remove-edit-course').forEach(icon => {
+        icon.addEventListener('click', (e) => {
+          const courseId = icon.getAttribute('data-course');
+          tempEditSelectedCourses = tempEditSelectedCourses.filter(id => id !== courseId);
+          updateEditCoursesDisplay();
+        });
+      });
+    }
+    
+    function saveEditCoordinator() {
+      const id = document.getElementById('editCoordId').value;
+      const coordinator = coordinators.find(c => c.id === id);
+      if (!coordinator) return;
+      
+      const newName = document.getElementById('editCoordName').value.trim();
+      const newEmail = document.getElementById('editCoordEmail').value.trim();
+      const newPassword = document.getElementById('editCoordPassword').value;
+      
+      if (!newName || !newEmail) {
+        alert('Preencha nome e email.');
+        return;
+      }
+      
+      coordinator.name = newName;
+      coordinator.email = newEmail;
+      if (newPassword) {
+        coordinator.password = newPassword;
+      }
+      coordinator.courses = [...tempEditSelectedCourses];
+      
+      renderCoordinatorsTable();
+      updateStats();
+      
+      const modal = bootstrap.Modal.getInstance(document.getElementById('editCoordinatorModal'));
+      if (modal) modal.hide();
+    }
+    
+    function addNewCoordinator() {
+      const name = document.getElementById('coordName').value.trim();
+      const email = document.getElementById('coordEmail').value.trim();
+      const password = document.getElementById('coordPassword').value;
+      
+      if (!name || !email || !password) {
+        alert('Preencha todos os campos obrigatórios.');
+        return;
+      }
+      
+      const newCoordinator = {
+        id: generateId(),
+        name: name,
+        email: email,
+        password: password,
+        courses: [...tempSelectedCourses],
+        active: true
+      };
+      
+      coordinators.push(newCoordinator);
+      renderCoordinatorsTable();
+      updateStats();
+      
+      // Limpar formulário
+      document.getElementById('coordName').value = '';
+      document.getElementById('coordEmail').value = '';
+      document.getElementById('coordPassword').value = '';
+      tempSelectedCourses = [];
+      updateCoursesDisplay();
+      
+      const modal = bootstrap.Modal.getInstance(document.getElementById('addCoordinatorModal'));
+      if (modal) modal.hide();
+      
+      alert(`Coordenador "${name}" adicionado com sucesso!`);
+    }
+    
+    function updateCoursesDisplay() {
+      const container = document.getElementById('selectedCoursesContainer');
+      if (tempSelectedCourses.length === 0) {
+        container.innerHTML = '<span class="text-muted small">Nenhum curso selecionado</span>';
+      } else {
+        container.innerHTML = tempSelectedCourses.map(courseId => `
+          <span class="course-tag">
+            ${escapeHtml(getCourseName(courseId))}
+            <i class="bi bi-x-circle-fill remove-course" data-course="${courseId}"></i>
+          </span>
+        `).join('');
+      }
+      
+      document.querySelectorAll('.remove-course').forEach(icon => {
+        icon.addEventListener('click', (e) => {
+          const courseId = icon.getAttribute('data-course');
+          tempSelectedCourses = tempSelectedCourses.filter(id => id !== courseId);
+          updateCoursesDisplay();
+        });
+      });
+    }
+    
+    function addCourseToSelection() {
+      const select = document.getElementById('courseSelect');
+      const selectedValue = select.value;
+      if (!selectedValue) {
+        alert('Selecione um curso primeiro.');
+        return;
+      }
+      if (!tempSelectedCourses.includes(selectedValue)) {
+        tempSelectedCourses.push(selectedValue);
+        updateCoursesDisplay();
+      } else {
+        alert('Este curso já foi adicionado.');
+      }
+      select.value = '';
+    }
+    
+    function addCourseToEditSelection() {
+      const select = document.getElementById('editCourseSelect');
+      const selectedValue = select.value;
+      if (!selectedValue) {
+        alert('Selecione um curso primeiro.');
+        return;
+      }
+      if (!tempEditSelectedCourses.includes(selectedValue)) {
+        tempEditSelectedCourses.push(selectedValue);
+        updateEditCoursesDisplay();
+      } else {
+        alert('Este curso já foi adicionado.');
+      }
+      select.value = '';
+    }
+    
+    function populateCourseSelects() {
+      const addSelect = document.getElementById('courseSelect');
+      const editSelect = document.getElementById('editCourseSelect');
+      
+      if (addSelect) {
+        addSelect.innerHTML = '<option value="">Selecione um curso...</option>' + 
+          availableCourses.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+      }
+      
+      if (editSelect) {
+        editSelect.innerHTML = '<option value="">Selecione um curso...</option>' + 
+          availableCourses.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+      }
+    }
+    
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+    
+    // Pesquisar coordenadores
+    function setupSearch() {
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+          const term = e.target.value.toLowerCase();
+          const rows = document.querySelectorAll('#coordinatorsTableBody tr');
+          rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            if (text.includes(term)) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+        });
+      }
+    }
+    
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("collapsed");
+    }
+    
+    // Inicialização
+    function init() {
+      tempSelectedCourses = [];
+      renderCoordinatorsTable();
+      updateStats();
+      setupSearch();
+      populateCourseSelects();
+      
+      document.getElementById('confirmAddCoordBtn').addEventListener('click', addNewCoordinator);
+      document.getElementById('addCourseBtn').addEventListener('click', addCourseToSelection);
+      document.getElementById('confirmEditCoordBtn').addEventListener('click', saveEditCoordinator);
+      document.getElementById('editAddCourseBtn').addEventListener('click', addCourseToEditSelection);
+      document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
+    }
+    
+    init();
+  </script>
+</body>
+</html>

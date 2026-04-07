@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="icon" href="img/logo.png">    
+
+  <title>Configurações - HourSync</title>
+
+  <style>
+    body {
+        background: #f1f1f1;
+        display: flex;
+        padding: 20px;
+        gap: 20px;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      height: 95vh;
+      background: linear-gradient(180deg, #6c83e6, #5a78d6);
+      border-radius: 25px;
+      padding: 20px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      transition: width 0.3s ease;
+    }
+
+    .sidebar.collapsed {
+      width: 90px;
+    }
+
+    .toggle-btn {
+      cursor: pointer;
+      font-size: 20px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar.collapsed .toggle-btn {
+      justify-content: center;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .collapsed .logo,
+    .collapsed .profile h6,
+    .collapsed .menu span,
+    .collapsed .logout span {
+      display: none;
+    }
+
+    .collapsed .menu a,
+    .collapsed .logout {
+      justify-content: center;
+    }
+
+    .profile {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .profile img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .collapsed .profile img {
+      width: 50px;
+      height: 50px;
+    }
+
+    .menu a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      border-radius: 12px;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 8px;
+      transition: 0.3s;
+    }
+
+    .menu a:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .menu a.active {
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.4);
+      margin: 20px 0;
+    }
+
+    .logout {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .logout:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* CONTEÚDO PRINCIPAL */
+    .content {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        padding-right: 5px;
+    }
+
+    /* TOPO */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    /* CONFIGURAÇÕES LAYOUT */
+    .config-grid {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    /* SIDEBAR DIREITA (menus de configuração) */
+    .config-sidebar {
+      width: 280px;
+      background: white;
+      border-radius: 28px;
+      padding: 20px 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+      height: fit-content;
+    }
+
+    .config-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border-radius: 16px;
+      color: #2c3e66;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+
+    .config-menu-item i {
+      font-size: 1.2rem;
+      width: 24px;
+      color: #6c83e6;
+    }
+
+    .config-menu-item.active {
+      background: #f0f3fe;
+      color: #4a60c2;
+    }
+
+    .config-menu-item:hover:not(.active) {
+      background: #f8f9fc;
+    }
+
+    /* ÁREA PRINCIPAL DE CONFIGURAÇÃO (cards) */
+    .config-main {
+      flex: 1;
+      background: white;
+      border-radius: 28px;
+      padding: 28px 32px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+      transition: 0.2s;
+    }
+
+    .config-header {
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+    }
+
+    .config-header h4 {
+      font-weight: 700;
+      color: #1f2b48;
+    }
+
+    /* Estilo para os campos do formulário */
+    .profile-field {
+      margin-bottom: 28px;
+    }
+
+    .profile-field label {
+      font-weight: 600;
+      color: #3f4e7a;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .profile-field .field-value {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: #f8fafd;
+      padding: 14px 18px;
+      border-radius: 20px;
+      border: 1px solid #eef2f8;
+    }
+
+    .field-text {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #1e2f50;
+    }
+
+    .btn-edit {
+      background: transparent;
+      border: 1px solid #cdd9ed;
+      border-radius: 30px;
+      padding: 5px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+
+    .btn-edit:hover {
+      background: #6c83e6;
+      border-color: #6c83e6;
+      color: white;
+    }
+
+    /* Upload de foto */
+    .avatar-large {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #eef2ff;
+      border: 3px solid white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .photo-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .btn-outline-custom {
+      border-radius: 40px;
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .divider-light {
+      height: 1px;
+      background: #edf2f7;
+      margin: 24px 0;
+    }
+
+    /* toggle (modo escuro simulado - apenas visual) */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.3s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #6c83e6;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    .config-card-small {
+      background: #f8fafd;
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 20px;
+      border: 1px solid #eef2f8;
+    }
+
+    .btn-atualizar {
+      background: #6c83e6;
+      border: none;
+      border-radius: 40px;
+      padding: 12px 28px;
+      font-weight: 600;
+      color: white;
+      transition: 0.2s;
+      width: 100%;
+    }
+
+    .btn-atualizar:hover {
+      background: #5a6fd1;
+      transform: translateY(-1px);
+    }
+
+    .senha-placeholder {
+      font-family: monospace;
+      letter-spacing: 2px;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 800px) {
+      .config-grid {
+        flex-direction: column;
+      }
+      .config-sidebar {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR - Estilo igual ao do código de referência -->
+  <div class="sidebar" id="sidebar">
+    <div>
+      <div class="toggle-btn" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+      </div>
+
+      <div class="logo">HourSync</div>
+
+      <div class="profile">
+        <img src="img/taylor.jpeg" alt="profile" id="sidebarProfileImg">
+        <h6>Taylor Swift</h6>
+      </div>
+
+      <div class="menu">
+        <a href="dashboard_admin.html"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+        <a href="gestao_cursos_admin.html"><i class="bi bi-book"></i><span>Gestão de Cursos</span></a>
+        <a href="coordenadores_admin.html"><i class="bi bi-people"></i><span>Coordenadores</span></a>
+        <a href="certificados_admin.html"><i class="bi bi-file-earmark-text"></i><span>Certificados</span></a>
+        <a href="configuracoes_admin.html" class="active"><i class="bi bi-gear"></i><span>Configurações</span></a>
+      </div>
+    </div>
+
+    <div>
+      <div class="divider"></div>
+      <a href="login.html" class="logout"><i class="bi bi-box-arrow-right"></i><span>Sair</span></a>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO PRINCIPAL: Configurações -->
+  <div class="content">
+    <div class="topbar">
+      <h5><strong>Configurações</strong> <span style="font-size: 14px; color: #6c757d;">/ Gerencie sua conta e preferências</span></h5>
+      <div></div>
+    </div>
+
+    <div class="config-grid">
+      <!-- Menu lateral de categorias (baseado na imagem) -->
+      <div class="config-sidebar">
+        <div class="config-menu-item active" data-tab="perfil">
+          <i class="bi bi-person-circle"></i> <span>Perfil</span>
+        </div>
+        <div class="config-menu-item" data-tab="seguranca">
+          <i class="bi bi-shield-lock"></i> <span>Login e Segurança</span>
+        </div>
+        <div class="config-menu-item" data-tab="notificacoes">
+          <i class="bi bi-bell"></i> <span>Notificações</span>
+        </div>
+        <div class="config-menu-item" data-tab="interface">
+          <i class="bi bi-palette"></i> <span>Interface</span>
+        </div>
+        <div class="config-menu-item" data-tab="avancado">
+          <i class="bi bi-sliders2"></i> <span>Configurações Adicionais</span>
+        </div>
+      </div>
+
+      <!-- Área principal dinâmica (Perfil exibido por padrão) -->
+      <div class="config-main" id="configMain">
+        <!-- PERFIL (padrão) -->
+        <div id="tabPerfil" class="config-tab-content">
+          <div class="config-header">
+            <h4><i class="bi bi-person-badge me-2"></i> Informações Pessoais</h4>
+            <p class="text-muted mb-0">Gerencie seus dados e foto de perfil</p>
+          </div>
+
+          <div class="row align-items-start">
+            <div class="col-md-4 text-center text-md-start mb-4">
+              <img src="img/taylor.jpeg" alt="Foto Perfil" class="avatar-large" id="profileAvatar" style="object-fit: cover;">
+              <div class="photo-actions mt-3">
+                <button class="btn btn-outline-primary btn-outline-custom" id="uploadFotoBtn"><i class="bi bi-camera"></i> Upload de Foto</button>
+                <button class="btn btn-outline-secondary btn-outline-custom" id="removerFotoBtn"><i class="bi bi-trash3"></i> Remover</button>
+              </div>
+              <input type="file" id="fotoInput" accept="image/jpeg,image/png,image/jpg" style="display: none;">
+              <small class="text-muted d-block mt-2">Formatos: PNG, JPG até 2MB</small>
+            </div>
+
+            <div class="col-md-8">
+              <div class="profile-field">
+                <label>Nome Completo</label>
+                <div class="field-value">
+                  <span class="field-text" id="displayNome">Taylor Alison Swift</span>
+                  <button class="btn-edit" onclick="editarCampo('nome')"><i class="bi bi-pencil"></i> Editar</button>
+                </div>
+              </div>
+              <div class="profile-field">
+                <label>Email</label>
+                <div class="field-value">
+                  <span class="field-text" id="displayEmail">taylor.swift@hoursync.com</span>
+                  <button class="btn-edit" onclick="editarCampo('email')"><i class="bi bi-pencil"></i> Editar</button>
+                </div>
+              </div>
+              <div class="profile-field">
+                <label>Número de Celular</label>
+                <div class="field-value">
+                  <span class="field-text" id="displayCelular">(11) 98765-4321</span>
+                  <button class="btn-edit" onclick="editarCampo('celular')"><i class="bi bi-pencil"></i> Editar</button>
+                </div>
+              </div>
+              <div class="profile-field">
+                <label>Faculdade Atrelada</label>
+                <div class="field-value">
+                  <span class="field-text" id="displayFaculdade">Faculdade Senac do Recife</span>
+                  <button class="btn-edit" onclick="editarCampo('faculdade')"><i class="bi bi-pencil"></i> Editar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="divider-light"></div>
+          <button class="btn-atualizar mt-2" id="atualizarPerfilBtn"><i class="bi bi-check2-circle"></i> Atualizar Perfil</button>
+        </div>
+
+        <!-- SEGURANÇA -->
+        <div id="tabSeguranca" class="config-tab-content" style="display: none;">
+          <div class="config-header">
+            <h4><i class="bi bi-shield-check"></i> Login e Segurança</h4>
+            <p>Altere sua senha e ative a autenticação de dois fatores</p>
+          </div>
+          <div class="config-card-small">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+              <div><strong>Senha Atual</strong><div class="senha-placeholder mt-1">***********</div></div>
+              <button class="btn-edit" id="alterarSenhaBtn"><i class="bi bi-key"></i> Alterar Senha</button>
+            </div>
+          </div>
+          <div class="config-card-small">
+            <div class="d-flex justify-content-between align-items-center">
+              <div><strong>Autenticação de Dois Fatores (2FA)</strong><br><small class="text-muted">Adicione uma camada extra de segurança</small></div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="twoFactorToggle" style="width: 2.5rem; height: 1.2rem;">
+                <label class="form-check-label" for="twoFactorToggle">Ativar</label>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-info mt-2">🔐 Mantenha sua conta segura, nunca compartilhe sua senha.</div>
+        </div>
+
+        <!-- NOTIFICAÇÕES -->
+        <div id="tabNotificacoes" class="config-tab-content" style="display: none;">
+          <div class="config-header">
+            <h4><i class="bi bi-envelope-paper"></i> Notificações</h4>
+            <p>Configure alertas de certificados pendentes e atualizações</p>
+          </div>
+          <div class="config-card-small d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-file-text"></i> <strong>Certificados pendentes</strong><br><small>Receber alerta quando houver análise pendente</small></span>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="notifPendentes" checked>
+            </div>
+          </div>
+          <div class="config-card-small d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-check-circle"></i> <strong>Certificados aprovados/reprovados</strong><br><small>Notificação de resultados</small></span>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="notifResultados" checked>
+            </div>
+          </div>
+          <div class="config-card-small d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-megaphone"></i> <strong>Lembretes semanais</strong><br><small>Resumo de atividades e horas complementares</small></span>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="notifSemanal">
+            </div>
+          </div>
+        </div>
+
+        <!-- INTERFACE -->
+        <div id="tabInterface" class="config-tab-content" style="display: none;">
+          <div class="config-header">
+            <h4><i class="bi bi-brush"></i> Interface e Aparência</h4>
+            <p>Personalize a experiência visual do sistema</p>
+          </div>
+          <div class="config-card-small d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-moon-stars"></i> <strong>Modo escuro</strong><br><small>Ativar tema escuro no sistema</small></span>
+            <div class="toggle-switch">
+              <input type="checkbox" id="darkModeToggle">
+              <span class="slider"></span>
+            </div>
+          </div>
+          <div class="config-card-small">
+            <span><i class="bi bi-palette"></i> <strong>Cores do tema</strong><br><small>Cores primárias (em breve customização avançada)</small></span>
+            <div class="mt-2">
+              <select class="form-select form-select-sm w-auto" id="themeColorSelect">
+                <option value="#6c83e6">Padrão (Azul Lavanda)</option>
+                <option value="#2c7da0">Azul Petróleo</option>
+                <option value="#5f6caf">Roxo Suave</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONFIGURAÇÕES ADICIONAIS -->
+        <div id="tabAvancado" class="config-tab-content" style="display: none;">
+          <div class="config-header">
+            <h4><i class="bi bi-gear-wide-connected"></i> Avançado</h4>
+            <p>Opções extras e gestão de dados</p>
+          </div>
+          <div class="config-card-small">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+              <div><strong>Exportar dados pessoais</strong><br><small>Baixe suas informações em formato JSON</small></div>
+              <button class="btn-edit" id="exportarDadosBtn"><i class="bi bi-download"></i> Exportar</button>
+            </div>
+          </div>
+          <div class="config-card-small">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+              <div><strong>Limpar histórico de atividades</strong><br><small>Remove logs e notificações antigas</small></div>
+              <button class="btn-edit text-danger" id="limparHistoricoBtn"><i class="bi bi-trash"></i> Limpar</button>
+            </div>
+          </div>
+          <div class="alert alert-warning mt-2">⚠️ Alterações avançadas podem afetar sua experiência.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para edição de campos (simples) -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Editar informação</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label fw-bold" id="editFieldLabel"></label>
+          <input type="text" class="form-control" id="editFieldInput">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-primary" id="saveEditBtn">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Controle de abas (configurações laterais)
+    const tabs = document.querySelectorAll('.config-menu-item');
+    const contents = {
+      perfil: document.getElementById('tabPerfil'),
+      seguranca: document.getElementById('tabSeguranca'),
+      notificacoes: document.getElementById('tabNotificacoes'),
+      interface: document.getElementById('tabInterface'),
+      avancado: document.getElementById('tabAvancado')
+    };
+
+    function activateTab(tabId) {
+      Object.values(contents).forEach(content => { if(content) content.style.display = 'none'; });
+      if(contents[tabId]) contents[tabId].style.display = 'block';
+      tabs.forEach(tab => {
+        const tabValue = tab.getAttribute('data-tab');
+        if(tabValue === tabId) tab.classList.add('active');
+        else tab.classList.remove('active');
+      });
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabId = tab.getAttribute('data-tab');
+        activateTab(tabId);
+      });
+    });
+
+    // Dados do perfil (armazenamento simples)
+    let userProfile = {
+      nome: "Taylor Alison Swift",
+      email: "taylor.swift@hoursync.com",
+      celular: "(11) 98765-4321",
+      faculdade: "Faculdade Senac do Recife",
+      foto: "img/taylor.jpeg"
+    };
+
+    function updateProfileUI() {
+      document.getElementById('displayNome').innerText = userProfile.nome;
+      document.getElementById('displayEmail').innerText = userProfile.email;
+      document.getElementById('displayCelular').innerText = userProfile.celular;
+      document.getElementById('displayFaculdade').innerText = userProfile.faculdade;
+      const profileImg = document.getElementById('profileAvatar');
+      const sidebarImg = document.getElementById('sidebarProfileImg');
+      if(profileImg) profileImg.src = userProfile.foto + "?t=" + new Date().getTime();
+      if(sidebarImg) sidebarImg.src = userProfile.foto + "?t=" + new Date().getTime();
+    }
+
+    let currentEditField = '';
+    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    window.editarCampo = (campo) => {
+      currentEditField = campo;
+      const labels = { nome: "Nome Completo", email: "Email", celular: "Celular", faculdade: "Faculdade Atrelada" };
+      document.getElementById('editModalLabel').innerText = `Editar ${labels[campo]}`;
+      let valorAtual = userProfile[campo];
+      document.getElementById('editFieldInput').value = valorAtual;
+      editModal.show();
+    };
+    document.getElementById('saveEditBtn').addEventListener('click', () => {
+      const newValue = document.getElementById('editFieldInput').value.trim();
+      if(newValue) {
+        userProfile[currentEditField] = newValue;
+        updateProfileUI();
+        editModal.hide();
+      } else {
+        alert("Valor inválido");
+      }
+    });
+
+    document.getElementById('atualizarPerfilBtn').addEventListener('click', () => {
+      alert("Perfil atualizado com sucesso! (Simulação)");
+    });
+
+    // Upload de foto
+    const uploadBtn = document.getElementById('uploadFotoBtn');
+    const fotoInput = document.getElementById('fotoInput');
+    uploadBtn.addEventListener('click', () => fotoInput.click());
+    fotoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if(file && (file.type === 'image/jpeg' || file.type === 'image/png')) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          userProfile.foto = ev.target.result;
+          updateProfileUI();
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert("Selecione uma imagem JPEG ou PNG.");
+      }
+    });
+    document.getElementById('removerFotoBtn').addEventListener('click', () => {
+      userProfile.foto = "https://ui-avatars.com/api/?background=6c83e6&color=fff&name=Taylor";
+      updateProfileUI();
+    });
+
+    // Alterar senha (simulação)
+    document.getElementById('alterarSenhaBtn')?.addEventListener('click', () => {
+      const novaSenha = prompt("Digite a nova senha:");
+      if(novaSenha && novaSenha.length >= 6) alert("Senha alterada com sucesso!");
+      else if(novaSenha) alert("A senha deve ter pelo menos 6 caracteres.");
+    });
+
+    // Exportar dados
+    document.getElementById('exportarDadosBtn')?.addEventListener('click', () => {
+      const dataStr = JSON.stringify(userProfile, null, 2);
+      const blob = new Blob([dataStr], {type: "application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "dados_perfil_hoursync.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+    document.getElementById('limparHistoricoBtn')?.addEventListener('click', () => {
+      if(confirm("Limpar todo o histórico de atividades? Essa ação não pode ser desfeita.")) {
+        alert("Histórico limpo com sucesso (simulação).");
+      }
+    });
+
+    // Modo escuro simbólico (apenas demonstração, sem persistência pesada)
+    const darkToggle = document.getElementById('darkModeToggle');
+    if(darkToggle) {
+      darkToggle.addEventListener('change', (e) => {
+        if(e.target.checked) document.body.style.background = "#121826";
+        else document.body.style.background = "#f1f1f1";
+      });
+    }
+
+    // Troca de cor primária (sidebar e botões)
+    const themeSelect = document.getElementById('themeColorSelect');
+    if(themeSelect) {
+      themeSelect.addEventListener('change', (e) => {
+        const cor = e.target.value;
+        document.documentElement.style.setProperty('--bs-primary', cor);
+        const sidebar = document.querySelector('.sidebar');
+        if(sidebar) sidebar.style.background = `linear-gradient(180deg, ${cor}, ${cor}dd)`;
+      });
+    }
+
+    // Inicialização
+    updateProfileUI();
+    activateTab('perfil');
+
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("collapsed");
+    }
+    window.toggleSidebar = toggleSidebar;
+  </script>
+</body>
+</html>
