@@ -219,6 +219,21 @@
       color: #2d3e6e;
     }
 
+    .btn-cadastrar {
+      background: linear-gradient(95deg, #6c83e6, #5a78d6);
+      border: none;
+      border-radius: 30px;
+      padding: 8px 20px;
+      font-weight: 500;
+      color: white;
+      transition: 0.2s;
+    }
+    .btn-cadastrar:hover {
+      background: linear-gradient(95deg, #5a72d4, #4a68c4);
+      color: white;
+      transform: translateY(-1px);
+    }
+
     /* tabela responsiva com scroll */
     .table-responsive-custom {
       overflow-y: auto;
@@ -301,8 +316,8 @@
       color: white;
     }
 
-    /* Modal detalhe aluno */
-    .modal-detail .modal-content {
+    /* Modal cadastro */
+    .modal-cadastro .modal-content {
       border-radius: 28px;
       border: none;
       overflow: hidden;
@@ -311,6 +326,35 @@
       background: linear-gradient(95deg, #6c83e6, #5a78d6);
       color: white;
       padding: 18px 24px;
+    }
+    .modal-header-custom .btn-close-white {
+      filter: brightness(0) invert(1);
+    }
+    .form-label-custom {
+      font-weight: 600;
+      color: #2c3e66;
+      margin-bottom: 6px;
+    }
+    .form-control-custom, .form-select-custom {
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      transition: 0.2s;
+    }
+    .form-control-custom:focus, .form-select-custom:focus {
+      border-color: #6c83e6;
+      box-shadow: 0 0 0 3px rgba(108,131,230,0.1);
+    }
+    .password-field {
+      position: relative;
+    }
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #6c757d;
     }
     .horas-circle {
       background: #eef2ff;
@@ -333,7 +377,7 @@
 </head>
 <body>
 
-  <!-- SIDEBAR (mesmo estilo do dashboard) -->
+  <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
     <div>
       <div class="toggle-btn" onclick="toggleSidebar()">
@@ -362,10 +406,15 @@
     <!-- TOPO -->
     <div class="topbar">
       <h5><strong>Alunos</strong> <span style="font-size: 14px; color: #6c757d;">/ Gerenciamento de horas complementares</span></h5>
-      <input type="text" class="search-box" id="searchInput" placeholder="Pesquisar aluno...">
+      <div class="d-flex gap-2">
+        <input type="text" class="search-box" id="searchInput" placeholder="Pesquisar aluno...">
+        <button class="btn-cadastrar" data-bs-toggle="modal" data-bs-target="#modalCadastroAluno">
+          <i class="bi bi-person-plus"></i> Cadastrar aluno
+        </button>
+      </div>
     </div>
 
-    <!-- CARDS com base na imagem: Total Alunos, Em Andamento, Concluído, Média de Horas -->
+    <!-- CARDS -->
     <div class="row stats-row g-3">
       <div class="col-md-3 col-sm-6">
         <div class="stat-card border-primary-custom">
@@ -393,7 +442,7 @@
       </div>
     </div>
 
-    <!-- SEÇÃO PRINCIPAL: Lista de Alunos com tabela e ações -->
+    <!-- SEÇÃO PRINCIPAL: Lista de Alunos -->
     <div class="students-section">
       <div class="section-header">
         <h6 class="mb-0"><strong>📋 Lista de Alunos</strong></h6>
@@ -407,6 +456,7 @@
           <thead>
             <tr>
               <th>Aluno</th>
+              <th>Curso</th>
               <th>Horas</th>
               <th>Progresso</th>
               <th>Status</th>
@@ -414,7 +464,7 @@
             </tr>
           </thead>
           <tbody id="alunosTableBody">
-            <!-- dados injetados via JS, compatível com a imagem e arquivo base -->
+            <!-- dados injetados via JS -->
           </tbody>
         </table>
       </div>
@@ -422,7 +472,86 @@
     </div>
   </div>
 
-  <!-- MODAL DE DETALHES DO ALUNO (certificados aceitos e detalhes) -->
+  <!-- MODAL DE CADASTRO DE ALUNO -->
+  <div class="modal fade modal-cadastro" id="modalCadastroAluno" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header-custom">
+          <h5 class="modal-title"><i class="bi bi-person-badge"></i> Cadastrar Novo Aluno</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="padding: 1.8rem;">
+          <form id="formCadastroAluno">
+            <div class="row g-3">
+              <!-- Nome completo (do banco da faculdade) -->
+              <div class="col-md-12">
+                <label class="form-label-custom">Nome Completo <span class="text-danger">*</span></label>
+                <input type="text" class="form-control form-control-custom" id="cadastroNome" required placeholder="Ex: João Silva da Cunha">
+              </div>
+              
+              <!-- Matrícula -->
+              <div class="col-md-6">
+                <label class="form-label-custom">Matrícula <span class="text-danger">*</span></label>
+                <input type="text" class="form-control form-control-custom" id="cadastroMatricula" required placeholder="Número de matrícula">
+              </div>
+              
+              <!-- Curso -->
+              <div class="col-md-6">
+                <label class="form-label-custom">Curso <span class="text-danger">*</span></label>
+                <select class="form-select form-select-custom" id="cadastroCurso" required>
+                  <option value="">Selecione o curso</option>
+                  <option value="Análise e Desenvolvimento de Sistemas">Análise e Desenvolvimento de Sistemas</option>
+                  <option value="Administração">Administração</option>
+                  <option value="Engenharia Civil">Engenharia Civil</option>
+                  <option value="Enfermagem">Enfermagem</option>
+                  <option value="Pedagogia">Pedagogia</option>
+                  <option value="Gastronomia">Gastronomia</option>
+                  <option value="Design Gráfico">Design Gráfico</option>
+                </select>
+              </div>
+              
+              <!-- Email (gerado ou manual) -->
+              <div class="col-md-6">
+                <label class="form-label-custom">E-mail <span class="text-danger">*</span></label>
+                <input type="email" class="form-control form-control-custom" id="cadastroEmail" required placeholder="aluno@faculdade.edu.br">
+                <small class="text-muted">Sugestão: nome.sobrenome@faculdade.edu.br</small>
+              </div>
+              
+              <!-- Senha -->
+              <div class="col-md-6">
+                <label class="form-label-custom">Senha <span class="text-danger">*</span></label>
+                <div class="password-field">
+                  <input type="password" class="form-control form-control-custom" id="cadastroSenha" required placeholder="Crie uma senha">
+                  <i class="bi bi-eye-slash password-toggle" id="toggleSenhaCadastro"></i>
+                </div>
+                <small class="text-muted">Mínimo 6 caracteres</small>
+              </div>
+              
+              <!-- Horas necessárias para o curso -->
+              <div class="col-md-12">
+                <label class="form-label-custom">Horas Complementares Necessárias</label>
+                <input type="number" class="form-control form-control-custom" id="cadastroHorasNecessarias" value="100" step="10" min="20" max="400">
+                <small class="text-muted">Carga horária exigida pelo curso</small>
+              </div>
+
+              <!-- Horas necessárias por semestre -->
+              <div class="col-md-12">
+                <label class="form-label-custom">Horas Complementares Permitidas por semestre</label>
+                <input type="number" class="form-control form-control-custom" id="cadastroHorasNecessarias" value="25" step="10" min="20" max="400">
+                <small class="text-muted">Carga horária por semestre</small>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer border-0 pt-0 pb-3 px-4">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-cadastrar" id="btnConfirmarCadastro">Cadastrar Aluno</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE DETALHES DO ALUNO -->
   <div class="modal fade modal-detail" id="modalAluno" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -431,6 +560,7 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" style="padding: 1.5rem;">
+          <div class="mb-2"><strong>Curso:</strong> <span id="modalAlunoCurso">-</span></div>
           <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="horas-circle"><i class="bi bi-clock-history"></i> <span id="modalTotalHoras">0h</span></span>
             <span class="horas-circle"><i class="bi bi-hourglass-split"></i> <span id="modalHorasRestantes">0h</span></span>
@@ -438,10 +568,9 @@
           <div class="progress mb-4" style="height: 10px;">
             <div class="progress-bar-custom" id="modalProgressBar" style="width: 0%; background: #6c83e6;"></div>
           </div>
-          <h6 class="fw-bold"><i class="bi bi-patch-check"></i> Certificados Aceitos:</h6>
-          <div id="modalCertificadosList" style="margin-top: 12px;">
-            <!-- lista dinâmica -->
-          </div>
+          <div class="mb-2"><strong>E-mail:</strong> <span id="modalAlunoEmail">-</span></div>
+          <h6 class="fw-bold mt-3"><i class="bi bi-patch-check"></i> Certificados Aceitos:</h6>
+          <div id="modalCertificadosList" style="margin-top: 12px;"></div>
           <div class="alert alert-light mt-3 p-2 small text-center" role="alert">
             <i class="bi bi-info-circle"></i> Total acumulado válido para horas complementares
           </div>
@@ -455,12 +584,16 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Dados dos alunos conforme imagem e adicionando informações extras para enriquecer (baseado no conteúdo: João, Ana, Julia)
-    const alunosData = [
+    // Dados iniciais dos alunos (incluindo curso, email, matrícula)
+    let alunosData = [
       {
         id: 1,
         nome: "João Silva",
         nomeCompleto: "João Silva da Cunha",
+        matricula: "20240001",
+        curso: "Análise e Desenvolvimento de Sistemas",
+        email: "joao.silva@faculdade.edu.br",
+        senha: "******",
         horasCumpridas: 40,
         horasNecessarias: 100,
         status: "Em Andamento",
@@ -474,6 +607,10 @@
         id: 2,
         nome: "Ana Maria",
         nomeCompleto: "Ana Maria Souza",
+        matricula: "20240002",
+        curso: "Gastronomia",
+        email: "ana.souza@faculdade.edu.br",
+        senha: "******",
         horasCumpridas: 10,
         horasNecessarias: 200,
         status: "Em Andamento",
@@ -486,6 +623,10 @@
         id: 3,
         nome: "Julia Barboza",
         nomeCompleto: "Julia Barboza Lima",
+        matricula: "20240003",
+        curso: "Design Gráfico",
+        email: "julia.lima@faculdade.edu.br",
+        senha: "******",
         horasCumpridas: 20,
         horasNecessarias: 100,
         status: "Em Andamento",
@@ -498,6 +639,10 @@
         id: 4,
         nome: "Marcos Vinicius",
         nomeCompleto: "Marcos Vinicius Rocha",
+        matricula: "20240004",
+        curso: "Engenharia Civil",
+        email: "marcos.rocha@faculdade.edu.br",
+        senha: "******",
         horasCumpridas: 120,
         horasNecessarias: 120,
         status: "Concluído",
@@ -511,6 +656,10 @@
         id: 5,
         nome: "Camila Fernandes",
         nomeCompleto: "Camila Fernandes Alves",
+        matricula: "20240005",
+        curso: "Administração",
+        email: "camila.alves@faculdade.edu.br",
+        senha: "******",
         horasCumpridas: 85,
         horasNecessarias: 150,
         status: "Em Andamento",
@@ -524,6 +673,10 @@
         id: 6,
         nome: "Rafael Menezes",
         nomeCompleto: "Rafael Menezes Neto",
+        matricula: "20240006",
+        curso: "Enfermagem",
+        email: "rafael.neto@faculdade.edu.br",
+        senha: "******",
         horasCumpridas: 150,
         horasNecessarias: 150,
         status: "Concluído",
@@ -535,7 +688,9 @@
       }
     ];
 
-    // Atualiza os cards dinamicamente com base nos dados (total, em andamento, concluído)
+    let nextId = 7;
+
+    // Atualizar cards
     function updateStats() {
       const total = alunosData.length;
       const emAndamento = alunosData.filter(aluno => aluno.status === "Em Andamento").length;
@@ -546,18 +701,16 @@
       document.getElementById("totalAlunosCount").innerText = total;
       document.getElementById("emAndamentoCount").innerText = emAndamento;
       document.getElementById("concluidoCount").innerText = concluido;
-      // A média de horas conforme imagem = 140 (ajustamos dinamicamente baseado nos dados)
       document.querySelector(".stat-card.border-info-custom .stat-number").innerHTML = mediaHoras + '<span class="stat-unit">h</span>';
     }
 
-    // Renderizar tabela com filtro de pesquisa
     let currentSearchTerm = "";
 
     function renderTabelaAlunos() {
       const searchTerm = currentSearchTerm.toLowerCase().trim();
       let filtered = [...alunosData];
       if (searchTerm !== "") {
-        filtered = filtered.filter(aluno => aluno.nome.toLowerCase().includes(searchTerm) || aluno.nomeCompleto.toLowerCase().includes(searchTerm));
+        filtered = filtered.filter(aluno => aluno.nome.toLowerCase().includes(searchTerm) || aluno.nomeCompleto.toLowerCase().includes(searchTerm) || aluno.matricula.includes(searchTerm));
       }
 
       const tbody = document.getElementById("alunosTableBody");
@@ -580,7 +733,8 @@
 
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td><strong>${aluno.nome}</strong></td>
+          <td><strong>${aluno.nome}</strong><br><small class="text-muted">${aluno.matricula}</small></td>
+          <td>${aluno.curso}</td>
           <td>${horasStr}</td>
           <td>
             <div class="progress-wrapper">
@@ -589,7 +743,7 @@
               </div>
               <span class="progress-text">${Math.round(percentualExato)}%</span>
             </div>
-          </td>
+           </td>
           <td><span class="badge-status ${statusClass}">${statusText}</span></td>
           <td><button class="btn-ver" data-id="${aluno.id}">Ver</button></td>
         `;
@@ -599,11 +753,10 @@
       document.getElementById("exibindoCount").innerText = filtered.length;
       if (filtered.length === 0) {
         const emptyRow = document.createElement("tr");
-        emptyRow.innerHTML = `<td colspan="5" class="text-center py-4 text-muted">Nenhum aluno encontrado</td>`;
+        emptyRow.innerHTML = `<td colspan="6" class="text-center py-4 text-muted">Nenhum aluno encontrado</td>`;
         tbody.appendChild(emptyRow);
       }
 
-      // Adicionar eventos aos botões "Ver" para abrir modal com detalhes
       document.querySelectorAll(".btn-ver").forEach(btn => {
         btn.addEventListener("click", (e) => {
           const alunoId = parseInt(btn.getAttribute("data-id"));
@@ -613,24 +766,19 @@
       });
     }
 
-    // Modal com detalhes (Certificados aceitos, horas restantes, progresso)
     function abrirModalAluno(aluno) {
-      const modalNome = document.getElementById("modalAlunoNome");
-      const modalTotalHoras = document.getElementById("modalTotalHoras");
-      const modalHorasRestantes = document.getElementById("modalHorasRestantes");
-      const modalProgressBar = document.getElementById("modalProgressBar");
-      const modalCertificadosList = document.getElementById("modalCertificadosList");
-
-      modalNome.innerText = aluno.nomeCompleto;
+      document.getElementById("modalAlunoNome").innerText = aluno.nomeCompleto;
+      document.getElementById("modalAlunoCurso").innerText = aluno.curso;
+      document.getElementById("modalAlunoEmail").innerText = aluno.email;
       const totalCumpridas = aluno.horasCumpridas;
       const totalNecessarias = aluno.horasNecessarias;
       const restantes = Math.max(0, totalNecessarias - totalCumpridas);
-      modalTotalHoras.innerText = `${totalCumpridas}h / ${totalNecessarias}h`;
-      modalHorasRestantes.innerText = `${restantes}h restantes`;
+      document.getElementById("modalTotalHoras").innerText = `${totalCumpridas}h / ${totalNecessarias}h`;
+      document.getElementById("modalHorasRestantes").innerText = `${restantes}h restantes`;
       const percent = (totalCumpridas / totalNecessarias) * 100;
-      modalProgressBar.style.width = Math.min(percent, 100) + "%";
+      document.getElementById("modalProgressBar").style.width = Math.min(percent, 100) + "%";
 
-      // Montar lista de certificados aceitos
+      const modalCertificadosList = document.getElementById("modalCertificadosList");
       modalCertificadosList.innerHTML = "";
       if (aluno.certificadosAceitos && aluno.certificadosAceitos.length) {
         aluno.certificadosAceitos.forEach(cert => {
@@ -646,36 +794,108 @@
         modalCertificadosList.innerHTML = '<p class="text-muted">Nenhum certificado aceito registrado.</p>';
       }
 
-      // Exibir modal via Bootstrap
       const modal = new bootstrap.Modal(document.getElementById("modalAluno"));
       modal.show();
     }
 
-    // Evento de busca
-    const searchInput = document.getElementById("searchInput");
-    if (searchInput) {
-      searchInput.addEventListener("input", (e) => {
-        currentSearchTerm = e.target.value;
-        renderTabelaAlunos();
-      });
+    // Função para cadastrar novo aluno
+    function cadastrarAluno() {
+      const nomeCompleto = document.getElementById("cadastroNome").value.trim();
+      const matricula = document.getElementById("cadastroMatricula").value.trim();
+      const curso = document.getElementById("cadastroCurso").value;
+      const email = document.getElementById("cadastroEmail").value.trim();
+      const senha = document.getElementById("cadastroSenha").value;
+      const horasNecessarias = parseInt(document.getElementById("cadastroHorasNecessarias").value);
+
+      if (!nomeCompleto || !matricula || !curso || !email || !senha) {
+        alert("Preencha todos os campos obrigatórios!");
+        return;
+      }
+
+      if (senha.length < 6) {
+        alert("A senha deve ter no mínimo 6 caracteres.");
+        return;
+      }
+
+      // Verificar se matrícula já existe
+      if (alunosData.some(a => a.matricula === matricula)) {
+        alert("Matrícula já cadastrada no sistema!");
+        return;
+      }
+
+      // Verificar se email já existe
+      if (alunosData.some(a => a.email === email)) {
+        alert("E-mail já cadastrado no sistema!");
+        return;
+      }
+
+      const nomeCurto = nomeCompleto.split(" ")[0];
+      
+      const novoAluno = {
+        id: nextId++,
+        nome: nomeCurto,
+        nomeCompleto: nomeCompleto,
+        matricula: matricula,
+        curso: curso,
+        email: email,
+        senha: senha,
+        horasCumpridas: 0,
+        horasNecessarias: horasNecessarias,
+        status: "Em Andamento",
+        certificadosAceitos: []
+      };
+
+      alunosData.push(novoAluno);
+      
+      // Limpar formulário
+      document.getElementById("formCadastroAluno").reset();
+      document.getElementById("cadastroHorasNecessarias").value = "100";
+      
+      // Fechar modal
+      const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroAluno"));
+      modal.hide();
+      
+      // Atualizar interface
+      updateStats();
+      renderTabelaAlunos();
+      
+      alert(`Aluno ${nomeCompleto} cadastrado com sucesso!\n\nE-mail: ${email}\nSenha: ${senha}\n\nAs credenciais foram geradas para acesso à plataforma.`);
     }
 
-    // Sidebar toggle function
+    // Eventos
+    document.getElementById("btnConfirmarCadastro").addEventListener("click", cadastrarAluno);
+    
+    document.getElementById("toggleSenhaCadastro").addEventListener("click", function() {
+      const senhaInput = document.getElementById("cadastroSenha");
+      const icon = this;
+      if (senhaInput.type === "password") {
+        senhaInput.type = "text";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+      } else {
+        senhaInput.type = "password";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+      }
+    });
+
+    const searchInput = document.getElementById("searchInput");
+    searchInput.addEventListener("input", (e) => {
+      currentSearchTerm = e.target.value;
+      renderTabelaAlunos();
+    });
+
     function toggleSidebar() {
       const sidebar = document.getElementById("sidebar");
       sidebar.classList.toggle("collapsed");
     }
 
-    // Inicialização
     function init() {
       updateStats();
       renderTabelaAlunos();
     }
 
     init();
-
-    // Ajuste extra: Caso as imagens de perfil não existam, não quebra layout. Podemos usar fallback inline mas manter.
-    // Torna toggle disponível globalmente
     window.toggleSidebar = toggleSidebar;
   </script>
 </body>

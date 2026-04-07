@@ -24,7 +24,7 @@
       overflow: hidden;
     }
 
-    /* SIDEBAR (igual dashboard/alunos) */
+    /* SIDEBAR */
     .sidebar {
       width: 260px;
       height: 95vh;
@@ -157,7 +157,7 @@
       width: 260px;
     }
 
-    /* CARDS ESTATÍSTICAS - MESMO ESTILO DA PÁGINA ALUNOS */
+    /* CARDS ESTATÍSTICAS */
     .stats-row {
       margin-bottom: 24px;
     }
@@ -183,12 +183,6 @@
       color: #1e2a5e;
       line-height: 1.2;
     }
-    .stat-card .stat-unit {
-      font-size: 14px;
-      font-weight: 400;
-      color: #6c757d;
-    }
-    /* Cores das bordas para cada card */
     .border-pendente { border-left-color: #f4a261; }
     .border-aprovado { border-left-color: #2a9d8f; }
     .border-rejeitado { border-left-color: #e76f51; }
@@ -267,7 +261,7 @@
     .status-pendente { color: #c46b2e; font-weight: 600; background: #fff0db; display: inline-block; padding: 4px 12px; border-radius: 30px; font-size: 12px; }
     .status-rejeitado { color: #d9534f; font-weight: 600; background: #ffe6e5; display: inline-block; padding: 4px 12px; border-radius: 30px; font-size: 12px; }
 
-    /* MODAL CERTIFICADO */
+    /* MODAL VISUALIZAR CERTIFICADO */
     .modal-cert .modal-content {
       border-radius: 28px;
       border: none;
@@ -282,6 +276,7 @@
       width: 100%;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
     }
     .modal-actions {
       display: flex;
@@ -296,9 +291,83 @@
       padding: 10px 28px;
       color: white;
       font-weight: 600;
+      transition: 0.2s;
+    }
+    .btn-aprovar:hover {
+      background: #21867a;
     }
     .btn-rejeitar {
       background: #e76f51;
+      border: none;
+      border-radius: 40px;
+      padding: 10px 28px;
+      color: white;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .btn-rejeitar:hover {
+      background: #d45a3a;
+    }
+
+    /* MODAL DE CONFIRMAÇÃO COM CÁLCULO */
+    .modal-confirm .modal-content {
+      border-radius: 28px;
+      border: none;
+      overflow: hidden;
+    }
+    .calculo-card {
+      background: #f8f9fc;
+      border-radius: 20px;
+      padding: 20px;
+      margin: 15px 0;
+      border-left: 4px solid #6c83e6;
+    }
+    .calculo-title {
+      font-weight: 700;
+      color: #2c3e66;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    .calculo-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .calculo-item:last-child {
+      border-bottom: none;
+    }
+    .calculo-label {
+      color: #6c757d;
+      font-weight: 500;
+    }
+    .calculo-value {
+      font-weight: 600;
+      color: #2c3e66;
+    }
+    .calculo-destaque {
+      background: #fff0db;
+      padding: 10px;
+      border-radius: 12px;
+      margin-top: 12px;
+      text-align: center;
+      color: #c46b2e;
+      font-weight: 600;
+    }
+    .calculo-aprovado {
+      background: #e0f2e9;
+      color: #2a9d8f;
+    }
+    .btn-confirmar {
+      background: #2a9d8f;
+      border: none;
+      border-radius: 40px;
+      padding: 10px 28px;
+      color: white;
+      font-weight: 600;
+    }
+    .btn-cancelar-modal {
+      background: #95a5a6;
       border: none;
       border-radius: 40px;
       padding: 10px 28px;
@@ -341,24 +410,24 @@
       <input type="text" class="search-box" id="searchInput" placeholder="Pesquisar por aluno...">
     </div>
 
-    <!-- CARDS ESTATÍSTICAS (mesmo estilo da página alunos) -->
+    <!-- CARDS ESTATÍSTICAS -->
     <div class="row stats-row g-3">
       <div class="col-md-4 col-sm-6">
         <div class="stat-card border-pendente">
           <div class="stat-title">Pendentes</div>
-          <div class="stat-number" id="pendentesCount">23</div>
+          <div class="stat-number" id="pendentesCount">0</div>
         </div>
       </div>
       <div class="col-md-4 col-sm-6">
         <div class="stat-card border-aprovado">
           <div class="stat-title">Aprovados</div>
-          <div class="stat-number" id="aprovadosCount">150</div>
+          <div class="stat-number" id="aprovadosCount">0</div>
         </div>
       </div>
       <div class="col-md-4 col-sm-6">
         <div class="stat-card border-rejeitado">
           <div class="stat-title">Rejeitados</div>
-          <div class="stat-number" id="rejeitadosCount">12</div>
+          <div class="stat-number" id="rejeitadosCount">0</div>
         </div>
       </div>
     </div>
@@ -380,7 +449,7 @@
               <th>Curso</th>
               <th>Turma</th>
               <th>Categoria</th>
-              <th>Horas</th>
+              <th>Horas Solicitadas</th>
               <th>Data</th>
               <th>Status</th>
               <th>Ação</th>
@@ -395,7 +464,7 @@
     </div>
   </div>
 
-  <!-- MODAL VISUALIZAR CERTIFICADO (APROVAR/REJEITAR) -->
+  <!-- MODAL VISUALIZAR CERTIFICADO (APENAS VISUALIZAÇÃO E BOTÕES) -->
   <div class="modal fade modal-cert" id="modalCertificado" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
@@ -414,12 +483,38 @@
     </div>
   </div>
 
+  <!-- MODAL DE CONFIRMAÇÃO COM CÁLCULO DE HORAS (APARECE APÓS CLICAR EM APROVAR) -->
+  <div class="modal fade modal-confirm" id="modalConfirmacaoAprovacao" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header-custom">
+          <h5 class="modal-title"><i class="bi bi-calculator-fill"></i> Confirmar Aprovação</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="calculo-card" id="calculoCardConfirmacao">
+            <div class="calculo-title">
+              <i class="bi bi-clock-history"></i> Cálculo de Horas
+            </div>
+            <div id="calculoContentConfirmacao">
+              <!-- Conteúdo preenchido via JS -->
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="btn-cancelar-modal" id="btnCancelarConfirmacao"><i class="bi bi-x-circle"></i> Cancelar</button>
+            <button class="btn-confirmar" id="btnConfirmarAprovacao"><i class="bi bi-check-lg"></i> Confirmar Aprovação</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL REJEIÇÃO (MOTIVO) -->
   <div class="modal fade" id="modalRejeicao" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content" style="border-radius: 28px;">
         <div class="modal-header" style="border-bottom: none;">
-          <h5 class="fw-bold">Motivo da Rejeição</h5>
+          <h5 class="fw-bold"><i class="bi bi-exclamation-triangle"></i> Motivo da Rejeição</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
@@ -435,18 +530,31 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Dados dos certificados (exemplo baseado nas imagens e adicionando mais variedade)
+    // Limite semestral: 25 horas
+    const LIMITE_SEMESTRAL = 25;
+
+    // Dados dos alunos com horas já utilizadas no semestre
+    const alunosInfo = {
+      1: { nome: "João Silva", curso: "ADS", horasUtilizadasSemestre: 15, limiteSemestral: LIMITE_SEMESTRAL },
+      2: { nome: "Maria Menezes", curso: "ADS", horasUtilizadasSemestre: 5, limiteSemestral: LIMITE_SEMESTRAL },
+      3: { nome: "Ana Maria", curso: "Gastronomia", horasUtilizadasSemestre: 20, limiteSemestral: LIMITE_SEMESTRAL },
+      4: { nome: "Julia Barboza", curso: "Design", horasUtilizadasSemestre: 8, limiteSemestral: LIMITE_SEMESTRAL },
+      5: { nome: "Marcos Vinicius", curso: "ADS", horasUtilizadasSemestre: 25, limiteSemestral: LIMITE_SEMESTRAL },
+      6: { nome: "Camila Fernandes", curso: "Administração", horasUtilizadasSemestre: 3, limiteSemestral: LIMITE_SEMESTRAL },
+      7: { nome: "Rafael Menezes", curso: "ADS", horasUtilizadasSemestre: 12, limiteSemestral: LIMITE_SEMESTRAL }
+    };
+
+    // Dados dos certificados
     let certificadosData = [
-      { id: 1, aluno: "João Silva", curso: "ADS", turma: "TADS047", categoria: "Palestra", horas: 10, data: "12/03/2026", status: "Pendente", imgUrl: "img/certificado.png" },
-      { id: 2, aluno: "Maria Menezes", curso: "ADS", turma: "TADS048", categoria: "Workshop", horas: 40, data: "15/03/2026", status: "Pendente", imgUrl: "img/certificado.png" },
-      { id: 3, aluno: "Ana Maria", curso: "Gastronomia", turma: "GAS022", categoria: "Curso", horas: 20, data: "10/03/2026", status: "Aprovado", imgUrl: "img/certificado.png" },
-      { id: 4, aluno: "Julia Barboza", curso: "Design", turma: "DSG011", categoria: "Evento", horas: 15, data: "05/03/2026", status: "Rejeitado", imgUrl: "img/certificado.png" },
-      { id: 5, aluno: "Marcos Vinicius", curso: "ADS", turma: "TADS047", categoria: "Curso", horas: 60, data: "20/02/2026", status: "Aprovado", imgUrl: "img/certificado.png" },
-      { id: 6, aluno: "Camila Fernandes", curso: "Administração", turma: "ADM033", categoria: "Palestra", horas: 8, data: "18/03/2026", status: "Pendente", imgUrl: "img/certificado.png" },
-      { id: 7, aluno: "Rafael Menezes", curso: "ADS", turma: "TADS049", categoria: "Workshop", horas: 25, data: "22/03/2026", status: "Pendente", imgUrl: "img/certificado.png" }
+      { id: 1, alunoId: 1, aluno: "João Silva", curso: "ADS", turma: "TADS047", categoria: "Palestra", horasSolicitadas: 20, data: "12/03/2026", status: "Pendente", imgUrl: "img/certificado.png", horasAprovadas: null },
+      { id: 2, alunoId: 2, aluno: "Maria Menezes", curso: "ADS", turma: "TADS048", categoria: "Workshop", horasSolicitadas: 40, data: "15/03/2026", status: "Pendente", imgUrl: "img/certificado.png", horasAprovadas: null },
+      { id: 3, alunoId: 3, aluno: "Ana Maria", curso: "Gastronomia", turma: "GAS022", categoria: "Curso", horasSolicitadas: 10, data: "10/03/2026", status: "Aprovado", imgUrl: "img/certificado.png", horasAprovadas: 10 },
+      { id: 4, alunoId: 4, aluno: "Julia Barboza", curso: "Design", turma: "DSG011", categoria: "Evento", horasSolicitadas: 30, data: "05/03/2026", status: "Rejeitado", imgUrl: "img/certificado.png", horasAprovadas: null },
+      { id: 5, alunoId: 5, aluno: "Marcos Vinicius", curso: "ADS", turma: "TADS047", categoria: "Curso", horasSolicitadas: 15, data: "20/02/2026", status: "Aprovado", imgUrl: "img/certificado.png", horasAprovadas: 0 },
+      { id: 6, alunoId: 6, aluno: "Camila Fernandes", curso: "Administração", turma: "ADM033", categoria: "Palestra", horasSolicitadas: 25, data: "18/03/2026", status: "Pendente", imgUrl: "img/certificado.png", horasAprovadas: null },
+      { id: 7, alunoId: 7, aluno: "Rafael Menezes", curso: "ADS", turma: "TADS049", categoria: "Workshop", horasSolicitadas: 20, data: "22/03/2026", status: "Pendente", imgUrl: "img/certificado.png", horasAprovadas: null }
     ];
 
-    // Função para atualizar os cards (Pendentes, Aprovados, Rejeitados)
     function updateStats() {
       const pendentes = certificadosData.filter(c => c.status === "Pendente").length;
       const aprovados = certificadosData.filter(c => c.status === "Aprovado").length;
@@ -457,7 +565,58 @@
     }
 
     let currentSearchTerm = "";
-    let currentCertificadoSelecionado = null; // guarda o certificado atual para aprovação/rejeição
+    let currentCertificadoSelecionado = null;
+
+    function calcularHorasAprovadas(horasSolicitadas, horasUtilizadas) {
+      const disponivel = LIMITE_SEMESTRAL - horasUtilizadas;
+      if (disponivel <= 0) {
+        return { aprovadas: 0, disponivel: 0, aprovacaoParcial: false, mensagem: "Limite semestral já atingido (25/25 horas). Nenhuma hora será aprovada." };
+      } else if (horasSolicitadas <= disponivel) {
+        return { aprovadas: horasSolicitadas, disponivel: disponivel, aprovacaoParcial: false, mensagem: `Todas as ${horasSolicitadas}h serão aproveitadas.` };
+      } else {
+        return { aprovadas: disponivel, disponivel: disponivel, aprovacaoParcial: true, mensagem: `Aprovado parcialmente devido ao limite semestral de ${LIMITE_SEMESTRAL}h.` };
+      }
+    }
+
+    function renderizarCalculoConfirmacao(certificado) {
+      const alunoInfo = alunosInfo[certificado.alunoId];
+      if (!alunoInfo) return;
+      
+      const horasSolicitadas = certificado.horasSolicitadas;
+      const horasUtilizadas = alunoInfo.horasUtilizadasSemestre;
+      const disponivel = LIMITE_SEMESTRAL - horasUtilizadas;
+      const calculo = calcularHorasAprovadas(horasSolicitadas, horasUtilizadas);
+      
+      const container = document.getElementById("calculoContentConfirmacao");
+      container.innerHTML = `
+        <div class="calculo-item">
+          <span class="calculo-label">📝 Horas solicitadas:</span>
+          <span class="calculo-value">${horasSolicitadas}h</span>
+        </div>
+        <div class="calculo-item">
+          <span class="calculo-label">⏱️ Horas já utilizadas no semestre:</span>
+          <span class="calculo-value">${horasUtilizadas}h de ${LIMITE_SEMESTRAL}h</span>
+        </div>
+        <div class="calculo-item">
+          <span class="calculo-label">📊 Horas disponíveis:</span>
+          <span class="calculo-value">${disponivel > 0 ? disponivel : 0}h</span>
+        </div>
+        <div class="calculo-item">
+          <span class="calculo-label">✅ Horas que serão aprovadas:</span>
+          <span class="calculo-value" style="color: #2a9d8f; font-size: 18px;">${calculo.aprovadas}h</span>
+        </div>
+        ${calculo.aprovacaoParcial ? 
+          `<div class="calculo-destaque">
+            <i class="bi bi-exclamation-triangle-fill"></i> ${calculo.mensagem}
+          </div>` : 
+          `<div class="calculo-destaque calculo-aprovado">
+            <i class="bi bi-check-circle-fill"></i> ${calculo.mensagem}
+          </div>`
+        }
+      `;
+      
+      return calculo;
+    }
 
     function renderTabelaCertificados() {
       const searchTerm = currentSearchTerm.toLowerCase().trim();
@@ -469,10 +628,10 @@
       const tbody = document.getElementById("certificadosTableBody");
       tbody.innerHTML = "";
       filtered.forEach(cert => {
-        let statusClass = "";
         let statusHtml = "";
         if (cert.status === "Aprovado") {
-          statusHtml = `<span class="status-aprovado"><i class="bi bi-check-circle-fill me-1"></i>Aprovado</span>`;
+          const horasExibidas = cert.horasAprovadas !== null ? cert.horasAprovadas : cert.horasSolicitadas;
+          statusHtml = `<span class="status-aprovado"><i class="bi bi-check-circle-fill me-1"></i>Aprovado (${horasExibidas}h)</span>`;
         } else if (cert.status === "Pendente") {
           statusHtml = `<span class="status-pendente"><i class="bi bi-hourglass-split me-1"></i>Pendente</span>`;
         } else {
@@ -485,12 +644,12 @@
           <td>${cert.curso}</td>
           <td>${cert.turma}</td>
           <td>${cert.categoria}</td>
-          <td>${cert.horas}h</td>
+          <td>${cert.horasSolicitadas}h</td>
           <td>${cert.data}</td>
           <td>${statusHtml}</td>
           <td>
             ${cert.status === "Pendente" ? `<button class="btn-analisar" data-id="${cert.id}">Analisar</button>` : `<button class="btn-analisar" style="background:#b0b8d4; cursor:not-allowed;" disabled>Analisar</button>`}
-          </td>
+           </td>
         `;
         tbody.appendChild(row);
       });
@@ -502,53 +661,82 @@
         tbody.appendChild(emptyRow);
       }
 
-      // Adicionar eventos aos botões "Analisar" (somente pendentes)
       document.querySelectorAll(".btn-analisar[data-id]").forEach(btn => {
         btn.addEventListener("click", (e) => {
           const certId = parseInt(btn.getAttribute("data-id"));
           const certificado = certificadosData.find(c => c.id === certId);
           if (certificado && certificado.status === "Pendente") {
-            abrirModalCertificado(certificado);
+            abrirModalVisualizar(certificado);
           }
         });
       });
     }
 
-    // Abrir modal com certificado
-    let modalCert = null;
-    let modalRej = null;
-
-    function abrirModalCertificado(certificado) {
+    // Abrir modal apenas para visualizar o certificado
+    function abrirModalVisualizar(certificado) {
       currentCertificadoSelecionado = certificado;
-      // Atualizar imagem (se houver caminho específico, senão usa padrão)
+      
       const imgElement = document.getElementById("modalCertificadoImg");
       if (imgElement) {
         imgElement.src = certificado.imgUrl || "img/certificado.png";
       }
+      
       modalCert.show();
     }
 
-    // Aprovar certificado
-    function aprovarCertificado() {
+    // Quando clica em Aprovar no primeiro modal, abre o modal de confirmação com o cálculo
+    function abrirModalConfirmacao() {
       if (currentCertificadoSelecionado) {
+        // Fecha o modal de visualização
+        modalCert.hide();
+        // Renderiza o cálculo no modal de confirmação
+        renderizarCalculoConfirmacao(currentCertificadoSelecionado);
+        // Abre o modal de confirmação
+        modalConfirm.show();
+      }
+    }
+
+    // Confirmar a aprovação de fato
+    function confirmarAprovacao() {
+      if (currentCertificadoSelecionado) {
+        const alunoInfo = alunosInfo[currentCertificadoSelecionado.alunoId];
+        const calculo = calcularHorasAprovadas(
+          currentCertificadoSelecionado.horasSolicitadas, 
+          alunoInfo.horasUtilizadasSemestre
+        );
+        const horasAprovadas = calculo.aprovadas;
+        
         currentCertificadoSelecionado.status = "Aprovado";
+        currentCertificadoSelecionado.horasAprovadas = horasAprovadas;
+        
+        // Atualizar horas utilizadas do aluno no semestre
+        alunoInfo.horasUtilizadasSemestre += horasAprovadas;
+        
         updateStats();
         renderTabelaCertificados();
-        modalCert.hide();
-        alert(`Certificado de ${currentCertificadoSelecionado.aluno} aprovado com sucesso!`);
+        modalConfirm.hide();
+        
+        if (calculo.aprovacaoParcial) {
+          alert(`✅ Certificado aprovado PARCIALMENTE!\n\n📌 Aluno: ${currentCertificadoSelecionado.aluno}\n📝 Solicitado: ${currentCertificadoSelecionado.horasSolicitadas}h\n✅ Aprovado: ${horasAprovadas}h\n⚠️ Motivo: Limite semestral de ${LIMITE_SEMESTRAL}h.\n\nHoras restantes no semestre: 0h`);
+        } else {
+          alert(`✅ Certificado aprovado com sucesso!\n\n📌 Aluno: ${currentCertificadoSelecionado.aluno}\n📝 Solicitado: ${currentCertificadoSelecionado.horasSolicitadas}h\n✅ Aprovado: ${horasAprovadas}h\n📊 Horas restantes no semestre: ${LIMITE_SEMESTRAL - alunoInfo.horasUtilizadasSemestre}h`);
+        }
+        
         currentCertificadoSelecionado = null;
       }
     }
 
-    // Abrir modal de rejeição
+    function cancelarConfirmacao() {
+      modalConfirm.hide();
+      currentCertificadoSelecionado = null;
+    }
+
     function abrirModalRejeicao() {
       modalCert.hide();
-      // Limpar textarea
       document.getElementById("motivoRejeicao").value = "";
       modalRej.show();
     }
 
-    // Confirmar rejeição com motivo
     function confirmarRejeicao() {
       const motivo = document.getElementById("motivoRejeicao").value.trim();
       if (motivo === "") {
@@ -560,12 +748,11 @@
         updateStats();
         renderTabelaCertificados();
         modalRej.hide();
-        alert(`Certificado de ${currentCertificadoSelecionado.aluno} foi rejeitado.\nMotivo enviado: ${motivo}`);
+        alert(`❌ Certificado de ${currentCertificadoSelecionado.aluno} foi REJEITADO.\n\nMotivo: ${motivo}`);
         currentCertificadoSelecionado = null;
       }
     }
 
-    // Evento de busca
     const searchInput = document.getElementById("searchInput");
     if (searchInput) {
       searchInput.addEventListener("input", (e) => {
@@ -574,28 +761,33 @@
       });
     }
 
-    // Sidebar toggle
     function toggleSidebar() {
       const sidebar = document.getElementById("sidebar");
       sidebar.classList.toggle("collapsed");
     }
 
-    // Inicialização
+    let modalCert = null;
+    let modalConfirm = null;
+    let modalRej = null;
+
     function init() {
       updateStats();
       renderTabelaCertificados();
 
-      // Inicializar modais
       modalCert = new bootstrap.Modal(document.getElementById("modalCertificado"));
+      modalConfirm = new bootstrap.Modal(document.getElementById("modalConfirmacaoAprovacao"));
       modalRej = new bootstrap.Modal(document.getElementById("modalRejeicao"));
 
-      // Eventos dos botões do modal
       const btnAprovar = document.getElementById("btnAprovarModal");
       const btnRejeitar = document.getElementById("btnRejeitarModal");
+      const btnConfirmarAprovacao = document.getElementById("btnConfirmarAprovacao");
+      const btnCancelarConfirmacao = document.getElementById("btnCancelarConfirmacao");
       const btnConfirmarRejeicao = document.getElementById("confirmarRejeicaoBtn");
 
-      if (btnAprovar) btnAprovar.addEventListener("click", aprovarCertificado);
+      if (btnAprovar) btnAprovar.addEventListener("click", abrirModalConfirmacao);
       if (btnRejeitar) btnRejeitar.addEventListener("click", abrirModalRejeicao);
+      if (btnConfirmarAprovacao) btnConfirmarAprovacao.addEventListener("click", confirmarAprovacao);
+      if (btnCancelarConfirmacao) btnCancelarConfirmacao.addEventListener("click", cancelarConfirmacao);
       if (btnConfirmarRejeicao) btnConfirmarRejeicao.addEventListener("click", confirmarRejeicao);
     }
 
