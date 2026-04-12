@@ -130,6 +130,37 @@ body {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* ================= LINK CADASTRAR (NOVO) ================= */
+.link-cadastrar {
+    color: #6987FF;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    display: inline-block;
+}
+
+.link-cadastrar:hover {
+    text-decoration: underline;
+    color: #4a6ae0;
+}
+
+/* Container para alinhar o link de cadastro */
+.cadastro-wrapper {
+    text-align: center;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Ajuste para manter consistência com o link "Esqueceu a senha?" */
+.small a {
+    color: #6987FF;
+    text-decoration: none;
+}
+
+.small a:hover {
+    text-decoration: underline;
+}
+
 /* ===== DIVIDER ===== */
 .divider {
   display: flex;

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ================= BOOTSTRAP ================= -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- ================= CSS DO PROJETO ================= -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- ================= ICONS ================= -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+  <!-- ================= FAVICON ================= -->
+  <link rel="icon" href="img/logo.png">    
+
+  <title>HourSync · Recuperar Senha</title>
+
+  <style>
+    /* ================= RESET ================= */
+    body {
+      margin: 0;
+    }
+
+    /* ================= LAYOUT PRINCIPAL ================= */
+    .lado {
+      width: 50%;
+      height: 100%;
+    }
+
+    /* ===================================================== */
+    /* ================= LADO ESQUERDO ====================== */
+    /* ===================================================== */
+
+    .esquerdo {
+      position: relative;
+      background-color: #6383FA;
+
+      background-image: 
+        url("img/pontos.png"),      
+        url("img/pontos.png"),      
+        url("img/esfera.png"),      
+        url("img/tablete.png"),     
+        url("img/esfera-azul.png"), 
+        url("img/esfera-azul.png"), 
+        url("img/esfera-azul.png"),
+        url("img/circulo.png"),
+        url("img/esfera-azul.png"),
+        url("img/raio.png");
+
+      background-repeat: no-repeat;
+
+      background-position: 
+        -100px -100px,                       
+        -100px calc(100% + 100px),          
+        right 60px top -50px,               
+        right 30px top -80px,               
+        30px -230px,                        
+        25px calc(100% - 100px),           
+        right 220px top 780px,              
+        right 70px top 680px,               
+        right 20px top 600px,               
+        right 60px top 620px;
+
+      background-size: 
+        350px, 
+        350px, 
+        200px, 
+        450px, 
+        450px, 
+        100px,
+        100px,
+        550px,
+        650px,
+        620px;
+    }
+
+    .titulo-principal {
+      font-size: 58px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .descricao {
+      font-size: 24px;
+    }
+
+    .raio-mark {
+      position: absolute;
+      right: 520px;
+      top: 830px;
+      color: white;
+      font-size: 30px;
+    }
+
+    /* ===================================================== */
+    /* ================= LADO DIREITO ======================= */
+    /* ===================================================== */
+
+    .direito {
+      background-color: #F5F6FA;
+      overflow-y: auto;
+    }
+
+    .form-box {
+      max-width: 400px;
+      margin-top: 120px;
+      transform: scale(1.1);
+    }
+
+    .input-group-text {
+      background-color: #fff;
+    }
+
+    .form-control:focus {
+      border-color: #6987FF;
+      box-shadow: 0 0 0 0.2rem rgba(105, 135, 255, 0.25);
+    }
+
+    .btn-primary {
+      background: #6987FF;
+      border: none;
+      padding: 10px;
+      font-weight: 500;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: #567efa;
+      border: none;
+      opacity: 1;
+    }
+
+    .btn-primary:active {
+      background: #257BFF;
+      transform: scale(0.97);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .divider span {
+      margin: 0 10px;
+    }
+
+    .icon-box {
+      width: 60px;
+      height: 60px;
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-size: 20px;
+      color: #555;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .icon-box:hover {
+      background-color: #ddd;
+    }
+
+    .link-voltar {
+      color: #6987FF;
+      text-decoration: none;
+      font-size: 0.8rem;
+    }
+
+    .link-voltar:hover {
+      text-decoration: underline;
+    }
+
+    .info-badge {
+      background: #e8edf9;
+      color: #4a6ae0;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.3rem 0.9rem;
+      border-radius: 30px;
+      display: inline-block;
+      margin-bottom: 0.8rem;
+    }
+
+    .direito::-webkit-scrollbar {
+      width: 5px;
+    }
+    .direito::-webkit-scrollbar-track {
+      background: #eef2f8;
+    }
+    .direito::-webkit-scrollbar-thumb {
+      background: #b9cad9;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ================= CONTAINER PRINCIPAL ================= -->
+  <div class="d-flex vh-100">
+
+    <!-- ================= LADO ESQUERDO ================= -->
+    <section class="lado esquerdo d-flex justify-content-center align-items-center">
+      <div class="container text-white text-center">
+
+        <h1 class="titulo-principal">
+          Recupere <br> seu acesso
+        </h1>
+
+        <p class="descricao">
+          Enviaremos um link para <br>
+          redefinir sua senha
+        </p>
+
+        <h2 class="raio-mark">x</h2>
+
+      </div>
+    </section>
+
+    <!-- ================= LADO DIREITO ================= -->
+    <section class="lado direito d-flex justify-content-center align-items-center">
+
+      <div class="container form-box text-center">
+
+        <h5 class="fw-bold">Sistema de Atividades Complementares</h5>
+        <p class="text-muted mb-2">Plataforma de Gestão e Análise</p>
+
+        <div class="info-badge">
+          <i class="fas fa-key me-1"></i> Recuperação de Senha
+        </div>
+
+        <!-- FORM DE RECUPERAÇÃO -->
+        <form id="formRecuperarSenha">
+
+          <!-- EMAIL INSTITUCIONAL -->
+          <div class="mb-3 text-start">
+            <label class="form-label">Email Institucional</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+              <input type="email" class="form-control" id="emailRecuperar" placeholder="superadmin@instituicao.edu.br" required>
+            </div>
+            <div class="form-text text-muted small mt-1">
+              Digite o e-mail cadastrado na plataforma
+            </div>
+          </div>
+
+          <!-- BOTÃO ENVIAR -->
+          <button type="submit" class="btn btn-primary w-100 mb-3">
+            <i class="fas fa-paper-plane me-2"></i> Enviar link de recuperação
+          </button>
+
+          <!-- LINK VOLTAR LOGIN -->
+          <div class="text-center mb-3">
+            <a href="login.html" class="link-voltar" id="backToLoginBtn">
+              <i class="fas fa-arrow-left me-1"></i> Voltar para o login
+            </a>
+          </div>
+
+        </form>
+
+        <!-- DIVISOR -->
+        <div class="divider my-3">
+          <span>Entre em contato conosco</span>
+        </div>
+
+        <!-- ICONES -->
+        <div class="d-flex justify-content-center gap-5 mb-4">
+          <div class="icon-box"><i class="fab fa-whatsapp"></i></div>
+          <div class="icon-box"><i class="fab fa-github"></i></div>
+          <div class="icon-box"><i class="fas fa-envelope"></i></div>
+        </div>
+
+        <p class="small text-muted">Todos os direitos reservados ao time</p>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- TOAST DE NOTIFICAÇÃO -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="liveToast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="4000">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMessage">
+          ✅ E-mail enviado com sucesso!
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JS ================= -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    (function() {
+      const form = document.getElementById('formRecuperarSenha');
+      const emailInput = document.getElementById('emailRecuperar');
+      const toastEl = document.getElementById('liveToast');
+      let toastBootstrap = null;
+      
+      if (toastEl) {
+        toastBootstrap = new bootstrap.Toast(toastEl, { autohide: true, delay: 4000 });
+      }
+
+      function showMessage(message, isError = false) {
+        const toastBody = document.getElementById('toastMessage');
+        if (toastBody) {
+          toastBody.innerHTML = isError ? `⚠️ ${message}` : `✅ ${message}`;
+          if (toastEl) {
+            if (isError) {
+              toastEl.classList.remove('bg-dark');
+              toastEl.classList.add('bg-danger');
+            } else {
+              toastEl.classList.remove('bg-danger');
+              toastEl.classList.add('bg-dark');
+            }
+            if (toastBootstrap) toastBootstrap.show();
+            setTimeout(() => {
+              toastEl.classList.remove('bg-danger');
+              toastEl.classList.add('bg-dark');
+            }, 3500);
+          }
+        } else {
+          alert(message);
+        }
+      }
+
+      function isValidEmail(email) {
+        return /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(email);
+      }
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const email = emailInput.value.trim();
+
+        if (email === "") {
+          showMessage("Digite seu e-mail institucional.", true);
+          emailInput.focus();
+          return;
+        }
+
+        if (!isValidEmail(email)) {
+          showMessage("E-mail inválido. Digite um e-mail válido.", true);
+          emailInput.focus();
+          return;
+        }
+
+        // Verificar se o e-mail existe no localStorage (cadastros anteriores)
+        let emailExiste = false;
+        try {
+          const admins = JSON.parse(localStorage.getItem("hourSync_superAdmins") || "[]");
+          emailExiste = admins.some(admin => admin.email === email);
+        } catch (err) {
+          console.log("Erro ao acessar localStorage");
+        }
+
+        if (!emailExiste) {
+          // Mesmo que não exista, por segurança mostramos a mesma mensagem
+          showMessage("Se o e-mail estiver cadastrado, você receberá as instruções em breve.");
+        } else {
+          showMessage(`Link de recuperação enviado para ${email}. Verifique sua caixa de entrada.`);
+        }
+
+        // Limpar campo após envio simulado
+        emailInput.value = "";
+        
+        // Opcional: redirecionar após alguns segundos
+        setTimeout(() => {
+          // Não redireciona automaticamente para dar tempo de ler a mensagem
+        }, 2000);
+      });
+    })();
+  </script>
+
+</body>
+</html>

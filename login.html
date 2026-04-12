@@ -55,14 +55,13 @@
         <p class="text-muted mb-4">Plataforma de Gestão e Análise</p>
 
         <!-- FORM -->
-        <form>
-
+        <form id="loginForm">
           <!-- EMAIL -->
           <div class="mb-3 text-start">
             <label class="form-label">Email Institucional</label>
             <div class="input-group">
               <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-              <input type="email" class="form-control">
+              <input type="email" class="form-control" id="emailLogin" required>
             </div>
           </div>
 
@@ -71,24 +70,30 @@
             <label class="form-label">Senha</label>
             <div class="input-group">
               <span class="input-group-text"><i class="fas fa-lock"></i></span>
-              <input type="password" class="form-control">
+              <input type="password" class="form-control" id="senhaLogin" required>
             </div>
           </div>
 
-          <!-- LEMBRAR -->
+          <!-- LEMBRAR E ESQUECEU SENHA -->
           <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
               <input type="checkbox" id="lembrar">
               <label for="lembrar" class="small text-muted">Lembre-se de mim</label>
             </div>
-            <a href="#" class="small text-decoration-none">Esqueceu a senha?</a>
+            <a href="senha.html" class="small text-decoration-none" id="esqueceuSenha">Esqueceu a senha?</a>
           </div>
 
           <!-- BOTÃO -->
-          <button class="btn btn-primary w-100 mb-4">
+          <button type="submit" class="btn btn-primary w-100 mb-2">
             Acessar Plataforma
           </button>
 
+          <!-- NOVO LINK DE CADASTRO -->
+          <div class="cadastro-wrapper">
+            <a href="cadastro.html" class="link-cadastrar" id="btnCadastrar">
+              Não tem conta ainda? <strong>Cadastre-se</strong>
+            </a>
+          </div>
         </form>
 
         <!-- DIVISOR -->
